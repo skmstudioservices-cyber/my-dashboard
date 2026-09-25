@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>SKM SPOC — Zenith UI</title>
+<script>
+(function(){var t=localStorage.getItem("spoc_theme")||"system";
+var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+document.documentElement.dataset.theme=d?"dark":"light";})();
+</script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='70' font-size='54' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>S</text></svg>">
+<style>
+:root{
+  --bg:#fafafa;--card:#ffffff;--txt:#18181b;--dim:#71717a;--faint:#a1a1aa;
+  --border:#e4e4e7;--muted:#f4f4f5;--muted2:#ececf0;
+  --acc:#6366f1;--acc2:#4f46e5;--accsoft:rgba(99,102,241,.09);
+  --ok:#16a34a;--oksoft:rgba(22,163,74,.1);--bad:#dc2626;--badsoft:rgba(220,38,38,.09);
+  --warn:#ca8a04;--warnsoft:rgba(202,138,4,.12);--unk:#a1a1aa;
+  --r:12px;--sh:0 1px 2px rgba(0,0,0,.05);
+}
+[data-theme=dark]{
+  --bg:#09090b;--card:#18181b;--txt:#fafafa;--dim:#a1a1aa;--faint:#71717a;
+  --border:#27272a;--muted:#27272a;--muted2:#202023;
+  --acc:#818cf8;--acc2:#a5b4fc;--accsoft:rgba(129,140,248,.12);
+  --ok:#4ade80;--oksoft:rgba(74,222,128,.12);--bad:#f87171;--badsoft:rgba(248,113,113,.12);
+  --warn:#facc15;--warnsoft:rgba(250,204,21,.13);--unk:#52525b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:Inter,ui-sans-serif,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh;transition:background .25s,color .25s}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* layout */
+.app{display:flex;min-height:100vh}
+.sb{width:240px;flex:none;background:var(--card);border-right:1px solid var(--border);position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;padding:16px 12px;transition:transform .3s}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
+.brand .lg{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:grid;place-items:center;color:#fff;font-weight:800}
+.brand b{font-size:.98rem}
+.brand small{display:block;color:var(--faint);font-size:.66rem;font-weight:500}
+.ngroup{margin-top:14px}
+.ngroup>span{display:block;font-size:.66rem;font-weight:700;letter-spacing:.8px;color:var(--faint);text-transform:uppercase;padding:0 10px 6px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--dim);font-size:.85rem;font-weight:500;cursor:pointer;transition:all .15s}
+.nav a:hover{background:var(--muted);color:var(--txt);text-decoration:none}
+.nav a.on{background:var(--accsoft);color:var(--acc2);font-weight:600}
+.sbfoot{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border);font-size:.68rem;color:var(--faint);line-height:1.7}
+.badge-p{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:99px;background:var(--oksoft);color:var(--ok);border:1px solid var(--ok)}
+.main{flex:1;margin-left:240px;padding:24px 28px 70px;max-width:1180px}
+.hdr{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.hdr h1{font-size:1.5rem;letter-spacing:-.02em}
+.hdr .sub{color:var(--dim);font-size:.86rem;margin-top:3px}
+.hdr .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clock{font-family:ui-monospace,monospace;font-size:.8rem;color:var(--dim);background:var(--card);border:1px solid var(--border);padding:6px 11px;border-radius:8px}
+
+/* buttons */
+.bt{background:var(--card);border:1px solid var(--border);color:var(--dim);border-radius:8px;padding:7px 12px;font-size:.8rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;font-family:inherit}
+.bt:hover{border-color:var(--acc);color:var(--acc2);transform:translateY(-1px)}
+.bt.prime{background:var(--acc);border-color:var(--acc);color:#fff}
+.bt.prime:hover{background:var(--acc2)}
+.icb{width:34px;justify-content:center;padding:7px 0}
+
+/* cards */
+.sec{display:none}
+.sec.on{display:block;animation:secin .3s ease}
+@keyframes secin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.crow{display:grid;gap:16px;margin-bottom:16px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.two{grid-template-columns:1.6fr 1fr}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);padding:18px;animation:cardin .4s both;transition:border-color .2s,box-shadow .2s}
+.card:hover{border-color:color-mix(in srgb,var(--acc) 40%,var(--border))}
+@keyframes cardin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.chead{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.chead b{font-size:.9rem}
+.chead small{color:var(--faint);font-size:.74rem}
+.chead .sp{flex:1}
+.kpi .l{color:var(--dim);font-size:.78rem;font-weight:600}
+.kpi .v{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin:4px 0 6px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:.73rem;font-weight:600}
+.kpi .up{color:var(--ok)}.kpi .dn{color:var(--bad)}.kpi .nt{color:var(--faint)}
+
+/* bars & pills */
+.bar{height:8px;border-radius:99px;background:var(--muted);overflow:hidden;margin:6px 0 12px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--acc);width:0;transition:width 1s cubic-bezier(.2,.7,.3,1)}
+.brow{display:flex;justify-content:space-between;font-size:.8rem;color:var(--dim);margin-top:10px}
+.brow b{color:var(--txt)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:99px}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.live{background:var(--oksoft);color:var(--ok)}
+.pill.ph{background:var(--warnsoft);color:var(--warn)}
+.pill.pv{background:var(--muted);color:var(--dim)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none;background:var(--unk)}
+.dot.check{background:var(--warn);animation:pulse 1s infinite}
+.dot.ok{background:var(--ok)}
+.dot.bad{background:var(--bad)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.skl{display:inline-block;height:9px;border-radius:4px;background:linear-gradient(90deg,var(--muted) 25%,var(--muted2) 50%,var(--muted) 75%);background-size:200% 100%;animation:shm 1.2s infinite}
+@keyframes shm{from{background-position:200% 0}to{background-position:-200% 0}}
+
+/* table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{text-align:left;font-size:.72rem;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .12s;animation:cardin .35s both}
+tbody tr:hover{background:var(--muted)}
+td .nm{font-weight:600}
+td .tg{color:var(--faint);font-size:.74rem}
+.lg{display:inline-flex;gap:5px}
+.lg .bt{padding:3px 9px;font-size:.72rem;border-radius:6px}
+.rbtn{background:var(--card);border:1px solid var(--border);color:var(--dim);border-radius:7px;padding:3px 10px;font-size:.74rem;font-weight:700;cursor:pointer;transition:all .15s}
+.rbtn:hover{color:var(--acc2);border-color:var(--acc)}
+.rbtn.spin{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* activity */
+.act{display:flex;gap:12px;padding:11px 2px;border-bottom:1px dashed var(--border);animation:cardin .35s both}
+.act:last-child{border:none}
+.act .ai{width:34px;height:34px;border-radius:9px;background:var(--accsoft);display:grid;place-items:center;font-size:.95rem;flex:none}
+.act .t{font-size:.83rem;font-weight:600}
+.act .d{font-size:.74rem;color:var(--dim)}
+.act .when{margin-left:auto;font-size:.72rem;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* comments */
+.cmbt{background:none;border:1px solid var(--border);border-radius:6px;color:var(--faint);font-size:.7rem;padding:2px 8px;cursor:pointer;transition:all .15s;font-weight:700}
+.cmbt:hover{color:var(--acc);border-color:var(--acc)}
+.cmbt.has{color:var(--acc);border-color:var(--acc);background:var(--accsoft)}
+.cmbox{display:none;margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.cmbox.open{display:block;animation:secin .25s}
+.cmlist{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.cm{background:var(--muted);border-radius:8px;padding:7px 10px;font-size:.78rem;position:relative}
+.cm .cmw{color:var(--faint);font-size:.66rem;margin-left:6px}
+.cm .cmd{position:absolute;top:5px;right:8px;background:none;border:none;color:var(--faint);cursor:pointer;font-size:.7rem}
+.cm .cmd:hover{color:var(--bad)}
+.cmin{display:flex;gap:6px}
+.cmin input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:.8rem;color:var(--txt);font-family:inherit}
+.cmin input:focus{outline:none;border-color:var(--acc)}
+
+/* misc */
+.qgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(165px,1fr))}
+.qbt{display:block;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;color:var(--txt);font-weight:600;font-size:.86rem;transition:all .18s;animation:cardin .35s both}
+.qbt:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 6px 18px var(--accsoft);text-decoration:none;color:var(--acc2)}
+.qbt small{display:block;color:var(--faint);font-weight:500;font-size:.7rem;margin-top:2px}
+.pgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.pitem{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;font-size:.82rem;animation:cardin .35s both}
+.pitem .nm{font-weight:700}
+.pitem .st{color:var(--warn);font-size:.73rem;margin-top:3px}
+.facts{list-style:none}
+.facts li{padding:9px 2px;border-bottom:1px dashed var(--border);font-size:.86rem}
+.facts li:last-child{border:none}
+.facts b{color:var(--acc2)}
+.kbd{font-family:ui-monospace,monospace;background:var(--muted);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.77rem}
+.notes{width:100%;min-height:130px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--txt);padding:12px;font-family:inherit;font-size:.88rem;resize:vertical}
+.notes:focus{outline:none;border-color:var(--acc)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--card);border:1px solid var(--acc);color:var(--acc2);padding:9px 16px;border-radius:10px;font-size:.82rem;font-weight:600;opacity:0;transform:translateY(10px);transition:all .3s;z-index:99;pointer-events:none;box-shadow:var(--sh)}
+.toast.show{opacity:1;transform:none}
+.ovl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
+.ovl.on{display:block}
+.hamb{display:none}
+.donutwrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:.8rem;color:var(--dim)}
+.legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+@media(max-width:900px){
+  .sb{transform:translateX(-105%)}.sb.open{transform:none;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+  .ovl.on2{display:block}
+  .main{margin-left:0;padding:16px 12px 60px}
+  .hamb{display:inline-flex}.hdr h1{font-size:1.2rem}
+}
+</style>
+</head>
+<body>
+<div class="ovl" id="ovl"></div>
+<div class="app">
+  <aside class="sb" id="sb">
+    <div class="brand"><div class="lg">S</div><div><b>SKM SPOC</b><small>Zenith UI · v3</small></div></div>
+    <div class="ngroup"><span>Main</span>
+      <div class="nav" id="nav">
+        <a data-s="overview" class="on">📊 Overview</a>
+        <a data-s="sites">🌐 Live Sites</a>
+        <a data-s="pipeline">🚧 Pipeline</a>
+        <a data-s="deploys">🚀 Deploys</a>
+      </div></div>
+    <div class="ngroup"><span>Ops</span>
+      <div class="nav">
+        <a data-s="vitals">📋 Vitals</a>
+        <a data-s="notion">🧠 Notion</a>
+        <a data-s="domains">🔍 Domains</a>
+        <a data-s="notes">📝 Notes</a>
+      </div></div>
+    <div class="sbfoot"><span class="badge-p">PRIVATE</span><br>noindex · robots blocked<br><a href="index.html" style="font-size:.72rem">⇄ switch to Classic UI</a><br>comments: saved on this device</div>
+  </aside>
+  <div class="main">
+    <div class="hdr">
+      <button class="bt hamb" onclick="nav2()">☰</button>
+      <div><h1 id="pt">Overview</h1><div class="sub" id="ps">Welcome back, SKM — here's your network today.</div></div>
+      <div class="right">
+        <span class="clock" id="clk">--:--:--</span>
+        <button class="bt icb" id="thb" onclick="cycleTheme()" title="theme: light / dark / system">🌙</button>
+        <button class="bt prime" onclick="refreshAll()">⟳ Refresh all</button>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="sec on" id="s-overview">
+      <div class="crow kpis" id="kpis"></div>
+      <div class="crow two">
+        <div class="card" id="c-health">
+          <div class="chead"><b>Network Health</b><small>reachability across all sites</small><span class="sp"></span>
+            <button class="rbtn" onclick="refreshSection('sites',this)">⟳</button>
+            <button class="cmbt" onclick="cmToggle('c:health',this)">💬 comment</button></div>
+          <div class="donutwrap">
+            <svg width="150" height="150" viewBox="0 0 42 42" id="donut"><circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--muted)" stroke-width="6"/><circle id="darc" cx="21" cy="21" r="15.9" fill="none" stroke="var(--ok)" stroke-width="6" stroke-dasharray="0 100" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray 1s ease"/></svg>
+            <div class="legend">
+              <div><span class="sw" style="background:var(--ok)"></span><b id="lup">…</b> reachable</div>
+              <div><span class="sw" style="background:var(--bad)"></span><b id="ldown">…</b> down</div>
+              <div><span class="sw" style="background:var(--muted)"></span><b id="ltot">…</b> total sites</div>
+            </div>
+          </div>
+          <div id="healthbars"></div>
+        </div>
+        <div class="card" id="c-act">
+          <div class="chead"><b>Recent Activity</b><small>latest pushes (GitHub)</small><span class="sp"></span>
+            <button class="rbtn" onclick="refreshSection('sites',this)">⟳</button>
+            <button class="cmbt" onclick="cmToggle('c:act',this)">💬 comment</button></div>
+          <div id="acts"><span class="skl" style="width:80%;display:block;margin-bottom:8px"></span><span class="skl" style="width:60%;display:block;margin-bottom:8px"></span><span class="skl" style="width:70%"></span></div>
+        </div>
+      </div>
+      <div class="card" id="c-quick">
+        <div class="chead"><b>⚡ Quick Jump</b><small>your daily links</small><span class="sp"></span><button class="cmbt" onclick="cmToggle('c:quick',this)">💬 comment</button></div>
+        <div class="qgrid">
+          <a class="qbt" href="https://dash.cloudflare.com" target="_blank">☁️ Cloudflare<small>dashboard</small></a>
+          <a class="qbt" href="https://dash.cloudflare.com/?to=/:account/workers-and-pages" target="_blank">🚀 Workers & Pages<small>sites + quotas</small></a>
+          <a class="qbt" href="https://github.com/skmstudioservices-cyber?tab=repositories" target="_blank">🐙 GitHub<small>all repos</small></a>
+          <a class="qbt" href="https://search.google.com/search-console" target="_blank">📊 Search Console<small>indexing</small></a>
+          <a class="qbt" href="https://analytics.google.com" target="_blank">📈 Analytics<small>GA</small></a>
+          <a class="qbt" href="https://mail.google.com" target="_blank">✉️ Gmail<small>mail</small></a>
+          <a class="qbt" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">🧠 Mission Control<small>Notion</small></a>
+          <a class="qbt" href="https://dash.cloudflare.com/?to=/:account/observability" target="_blank">🩺 Observability<small>bot logs</small></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SITES -->
+    <section class="sec" id="s-sites">
+      <div class="card">
+        <div class="chead"><b>🌐 Live Sites</b><small>status · last push · links — auto-fetched</small><span class="sp"></span>
+          <span style="font-size:.74rem;color:var(--dim)" id="upcount"></span>
+          <button class="rbtn" onclick="refreshSection('sites',this)">⟳ refresh</button>
+          <button class="cmbt" onclick="cmToggle('c:sites',this)">💬 comment</button></div>
+        <div class="tw"><table>
+          <thead><tr><th>Site</th><th>Type</th><th>Status</th><th>Last push</th><th>Links</th><th></th></tr></thead>
+          <tbody id="sbody"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="sec" id="s-pipeline">
+      <div class="card">
+        <div class="chead"><b>🚧 Pipeline</b><small>placeholder live — real build pending</small><span class="sp"></span>
+          <button class="rbtn" onclick="refreshSection('pipeline',this)">⟳</button>
+          <button class="cmbt" onclick="cmToggle('c:pipe',this)">💬 comment</button></div>
+        <div class="pgrid" id="pgrid"></div>
+      </div>
+    </section>
+
+    <!-- DEPLOYS -->
+    <section class="sec" id="s-deploys">
+      <div class="card">
+        <div class="chead"><b>🚀 Deploy / Actions</b><small>one-click workflow runs</small><span class="sp"></span><button class="cmbt" onclick="cmToggle('c:dep',this)">💬 comment</button></div>
+        <div class="qgrid">
+          <a class="qbt" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/deploy.yml" target="_blank">▶ deploy.yml<small>Workers</small></a>
+          <a class="qbt" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/pages-mirror.yml" target="_blank">▶ pages-mirror.yml<small>Pages</small></a>
+          <a class="qbt" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect</small></a>
+          <a class="qbt" href="https://github.com/skmstudioservices-cyber/bloodbanksnearme/actions" target="_blank">🩸 bloodbanksnearme<small>prototype ready</small></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VITALS -->
+    <section class="sec" id="s-vitals">
+      <div class="card">
+        <div class="chead"><b>📋 Vitals & Quotas</b><small>ops facts</small><span class="sp"></span><button class="cmbt" onclick="cmToggle('c:vit',this)">💬 comment</button></div>
+        <ul class="facts">
+          <li><b>D1 quota:</b> 100k reads/day · resets <b>05:30 IST</b> · SSR sites were dying <b>~17:30 IST</b> — should improve after 25 Sep robots fixes</li>
+          <li><b>AI bots blocked:</b> ~50 bots (54 UA groups) across 4 SSR sites — quota reserved for Googlebot/Bingbot</li>
+          <li><b>Sitemap lean:</b> 302,685 → <b>3,177 URLs</b> (99% cut) — resubmitted to GSC 25 Sep</li>
+          <li><b>GSC manual indexing:</b> ~10 requests/day — don't waste on bulk; sitemap + crawl is the path</li>
+          <li><b>Watch window:</b> Discovered → Indexed flips expected <b>28 Sep – 2 Oct</b></li>
+          <li><b>Canonical watch:</b> Google prefers <span class="kbd">digipincode.pages.dev</span>; sitemap lives on workers.dev property</li>
+          <li><b>Never mention "6 months"</b> on skmstudio.com (until ~23 Mar 2027) · no new tokens · no CF upgrade</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- NOTION -->
+    <section class="sec" id="s-notion">
+      <div class="card">
+        <div class="chead"><b>🧠 Notion Control Room</b><span class="sp"></span><button class="cmbt" onclick="cmToggle('c:not',this)">💬 comment</button></div>
+        <div class="qgrid">
+          <a class="qbt" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">Mission Control<small>master plan</small></a>
+          <a class="qbt" href="https://www.notion.so/3e4d732a925f815ead2de08a55b53f08" target="_blank">Conversation Log<small>history</small></a>
+          <a class="qbt" href="https://www.notion.so/3e4d732a925f8142a5e1fccfadc079e5" target="_blank">RTO Build Plan<small>roadmap</small></a>
+          <a class="qbt" href="https://www.notion.so/3e1d732a925f8189b544ce3c8024ebb6" target="_blank">Mistake Log<small>lessons</small></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOMAINS -->
+    <section class="sec" id="s-domains">
+      <div class="card">
+        <div class="chead"><b>🔍 Domain Watchlist</b><small>live RDAP check</small><span class="sp"></span>
+          <button class="rbtn" onclick="checkDomains(this)">⟳ check</button>
+          <button class="cmbt" onclick="cmToggle('c:dom',this)">💬 comment</button></div>
+        <div id="dl" style="display:flex;gap:8px;flex-wrap:wrap;font-size:.85rem"></div>
+        <div style="margin-top:10px;color:var(--dim);font-size:.76rem">Blood bank mission domains — grab before building bloodbanksnearme.</div>
+      </div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="sec" id="s-notes">
+      <div class="card">
+        <div class="chead"><b>📝 Quick Notes</b><small>saved on this device</small><span class="sp"></span>
+          <button class="rbtn" onclick="localStorage.setItem('spoc_notes',$('notes').value);toast('Saved ✓')">💾 save</button></div>
+        <textarea class="notes" id="notes" placeholder="Type anything — stays on this device..."></textarea>
+      </div>
+    </section>
+
+    <div style="margin-top:34px;text-align:center;color:var(--faint);font-size:.72rem;border-top:1px solid var(--border);padding-top:14px">
+      🔒 Private · robots noindex · my-dashboard-2av.pages.dev · repo my-dashboard ·
+      <a href="index.html">Classic UI</a> ⇄ <b>Zenith UI</b> ·
+      <a href="#" onclick="exportCm();return false">export comments</a>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ data ============ */
+const G="https://github.com/skmstudioservices-cyber/",API="https://api.github.com/repos/skmstudioservices-cyber/";
+const GSC=q=>"https://search.google.com/search-console?resource_id="+encodeURIComponent(q);
+const sites=[
+ {n:"digipincode (Workers)",u:"https://digipincode.india-in.workers.dev",repo:"digipincode-india",priv:1,gsc:"https://digipincode.india-in.workers.dev/",ty:"SSR · D1",ph:0},
+ {n:"digipincode (Pages)",u:"https://digipincode.pages.dev",repo:"digipincode-india",priv:1,gsc:"https://digipincode.pages.dev/",ty:"SSR mirror",ph:0},
+ {n:"mapsnearme",u:"https://mapsnearme.pages.dev",repo:"mapsnearme",gsc:"https://mapsnearme.pages.dev/",ty:"static",ph:0},
+ {n:"dashboardmapsnearme",u:"https://dashboardmapsnearme.pages.dev",repo:"dashboardmapsnearme",ty:"static admin",ph:0},
+ {n:"examstatus",u:"https://examstatus.india-in.workers.dev",repo:"examstatus",gsc:"https://examstatus.india-in.workers.dev/",ty:"SSR",ph:0},
+ {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",ty:"SSR",ph:0},
+ {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",ty:"static",ph:0},
+ {n:"skmstudio.com",u:"https://skmstudio.com",ty:"brand",ph:0},
+ {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",ty:"placeholder",ph:1},
+ {n:"toiletsnearme",u:"https://toiletsnearme.pages.dev",repo:"toiletsnearme",ty:"placeholder",ph:1},
+ {n:"cngpumpsnearme",u:"https://cngpumpsnearme.pages.dev",repo:"cngpumpsnearme",ty:"placeholder",ph:1},
+ {n:"evchargersnearme",u:"https://evchargersnearme.pages.dev",repo:"EVchargersnearme",ty:"placeholder",ph:1},
+ {n:"restareanearme",u:"https://restareanearme.pages.dev",repo:"restareanearme",ty:"placeholder",ph:1},
+ {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",ty:"placeholder",ph:1},
+ {n:"Safe-Alleys 🛡️",u:"https://safealleys.pages.dev",repo:"Safe-Alleys",ty:"new · PWA planned",ph:1},
+];
+const pend=[
+ {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — call-verify numbers first",repo:"bloodbanksnearme"},
+ {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
+ {n:"cngpumpsnearme",s:"content build pending",repo:"cngpumpsnearme"},
+ {n:"EVchargersnearme",s:"content build pending",repo:"EVchargersnearme"},
+ {n:"restareanearme",s:"content build pending",repo:"restareanearme"},
+ {n:"Aadhaar-Seva-Kendra",s:"content build pending",repo:"Aadhaar-Seva-Kendra-near-me"},
+];
+const domains=["raktsanchaar.com","raktsanchaar.in","madadnumber.com","madadsanket.com"];
+const SUBS={overview:["Overview","Welcome back, SKM — here's your network today."],sites:["Live Sites","Status · last push · links — auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Live RDAP availability check"],notes:["Quick Notes","Saved locally in this browser"]};
+
+/* ============ helpers ============ */
+const $=id=>document.getElementById(id);
+const ago=t=>{if(!t)return"";const s=(Date.now()-new Date(t))/1e3;if(s<3600)return Math.max(1,s/60|0)+"m ago";if(s<86400)return(s/3600|0)+"h ago";return(s/86400|0)+"d ago"};
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2000)}
+function nav2(){const on=$("sb").classList.toggle("open");$("ovl").classList.toggle("on2",on)}
+$("ovl").onclick=nav2;
+
+/* ============ theme ============ */
+const THEMES=["light","dark","system"];
+function applyTheme(){const t=localStorage.getItem("spoc_theme")||"system";
+ const d=t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches);
+ document.documentElement.dataset.theme=d?"dark":"light";
+ $("thb").textContent=t==="light"?"☀️":t==="dark"?"🌙":"🖥️";
+ $("thb").title="theme: "+t+" (click to change)"}
+function cycleTheme(){const cur=localStorage.getItem("spoc_theme")||"system";const nx=THEMES[(THEMES.indexOf(cur)+1)%3];localStorage.setItem("spoc_theme",nx);applyTheme();toast("Theme: "+nx)}
+applyTheme();
+
+/* ============ comments engine (shared with Classic) ============ */
+const CKEY="spoc_comments_v1";
+const cAll=()=>JSON.parse(localStorage.getItem(CKEY)||"{}");
+const cmGet=k=>cAll()[k]||[];
+function cmSaveAll(d){localStorage.setItem(CKEY,JSON.stringify(d))}
+function cmAdd(k,t){const d=cAll();(d[k]=d[k]||[]).push({t:t,at:Date.now()});cmSaveAll(d)}
+function cmDel(k,i){const d=cAll();(d[k]=d[k]||[]).splice(i,1);cmSaveAll(d)}
+function cmCount(k){return cmGet(k).length}
+function cmBadge(btn,k){const n=cmCount(k);btn.classList.toggle("has",n>0);btn.textContent=n?`\u{1F4AC} ${n}`:"\u{1F4AC} comment"}
+function cmRender(box,k){
+ const list=(cAll()[k]||[]).map((c,i)=>`<div class="cm">${c.t}<span class="cmw">${new Date(c.at).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}</span><button class="cmd" onclick="cmDel('${k}',${i});cmRender(this.closest('.cmbox'),'${k}');updateBadges()">\u2715</button></div>`).join("");
+ box.innerHTML=(list||`<div style="color:var(--faint);font-size:.75rem">no comments yet</div>`)+`<div class="cmin"><input placeholder="# add a comment\u2026" onkeydown="if(event.key==='Enter'&&this.value.trim()){cmAdd('${k}',this.value.trim());this.value='';cmRender(this.closest('.cmbox'),'${k}');updateBadges()}"><button class="bt prime" style="padding:6px 12px" onclick="var i=this.previousElementSibling;if(i.value.trim()){cmAdd('${k}',i.value.trim());i.value='';cmRender(this.closest('.cmbox'),'${k}');updateBadges()}">Add</button></div>`;
+}
+function cmToggle(k,btn){
+ const row=btn.closest("tr");
+ const host=row?row.lastElementChild:btn.closest(".card,.pitem");
+ const old=host.querySelector(".cmbox[data-k='"+k+"']");
+ if(old){old.remove();return}
+ const box=document.createElement("div");box.className="cmbox open";box.dataset.k=k;host.appendChild(box);
+ cmRender(box,k);box.querySelector("input").focus();
+}
+function updateBadges(){document.querySelectorAll(".cmbt[data-k]").forEach(b=>cmBadge(b,b.dataset.k))}
+function exportCm(){const d=cAll();const blob=new Blob([JSON.stringify(d,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="spoc-comments.json";a.click();toast("Comments exported ✓")}
+
+/* ============ nav ============ */
+const navs=document.querySelectorAll("#nav a, .ngroup .nav a");
+document.querySelectorAll(".nav a").forEach(a=>a.onclick=()=>{
+ document.querySelectorAll(".nav a").forEach(x=>x.classList.remove("on"));a.classList.add("on");
+ document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
+ $("s-"+a.dataset.s).classList.add("on");
+ $("pt").textContent=SUBS[a.dataset.s][0];$("ps").textContent=SUBS[a.dataset.s][1];
+ nav2();window.scrollTo({top:0});
+ if(a.dataset.s==="sites")refreshSection("sites",null,true)});
+
+/* ============ overview ============ */
+function kpis(){
+ const up=localStorage.getItem("spoc_up")||0;
+ const items=[
+  {l:"Sites Live",v:up?up+"/"+sites.length:0,d:up?up+" reachable now":"checking…",c:"up"},
+  {l:"In Pipeline",v:pend.length,d:"placeholder → real build",c:"nt"},
+  {l:"UA Groups Blocked",v:54,d:"AI bots off the SSR sites",c:"up"},
+  {l:"Sitemap URLs",v:"3,177",d:"99% cut from 302,685",c:"up"}];
+ $("kpis").innerHTML=items.map((k,i)=>`<div class="card kpi" style="animation-delay:${.05*i}s"><div class="l">${k.l}</div><div class="v" id="kv-${i}">${k.v}</div><div class="d ${k.c}">${k.d}</div></div>`).join("");
+}
+function drawHealth(){
+ const up=+(localStorage.getItem("spoc_up")||0),tot=sites.length,down=tot-up;
+ $("lup").textContent=up;$("ldown").textContent=down;$("ltot").textContent=tot;
+ const pct=tot?Math.round(up/tot*100):0;
+ $("darc").setAttribute("stroke-dasharray",pct+" "+(100-pct));
+ const ph=sites.filter(s=>s.ph).length,ssr=sites.filter(s=>s.ty.startsWith("SSR")).length,st=tot-ssr-ph;
+ $("healthbars").innerHTML=`
+  <div class="brow"><span>Static / brand</span><b>${st}</b></div><div class="bar"><i style="width:${Math.round(st/tot*100)}%;background:var(--acc)"></i></div>
+  <div class="brow"><span>SSR (D1 quota)</span><b>${ssr}</b></div><div class="bar"><i style="width:${Math.round(ssr/tot*100)}%;background:#8b5cf6"></i></div>
+  <div class="brow"><span>Placeholder (pipeline)</span><b>${ph}</b></div><div class="bar"><i style="width:${Math.round(ph/tot*100)}%;background:var(--warn)"></i></div>`;
+}
+async function activity(){
+ const el=$("acts");const picks=sites.filter(s=>s.repo&&!s.priv).slice(0,7);
+ let evts=[];
+ await Promise.all(picks.map(async s=>{
+  try{const r=await fetch(API+s.repo+"/commits?per_page=1",{headers:{Accept:"application/vnd.github+json"}});
+   if(!r.ok)return;const d=await r.json();if(d[0])evts.push({repo:s.repo,msg:(d[0].commit.message||"").split("\n")[0].slice(0,60),at:d[0].commit.author.date})}catch(e){}}));
+ evts.sort((a,b)=>new Date(b.at)-new Date(a.at));
+ el.innerHTML=evts.slice(0,7).map((e,i)=>`<div class="act" style="animation-delay:${.05*i}s"><div class="ai">⇗</div><div><div class="t">${e.repo}</div><div class="d">${e.msg}</div></div><div class="when">${ago(e.at)}</div></div>`).join("")||"<div style='color:var(--faint);font-size:.8rem'>No activity (rate limit?)</div>";
+}
+
+/* ============ sites ============ */
+function renderSites(){
+ $("sbody").innerHTML=sites.map((s,i)=>`
+ <tr style="animation-delay:${.02*i}s">
+  <td><a href="${s.u}" target="_blank" class="nm">${s.n}</a><div class="tg">${s.tag||s.ty}</div></td>
+  <td style="color:var(--dim)">${s.ty}</td>
+  <td><span class="pill ${s.priv?"pv":(s.ph?"ph":"live")}">${s.priv?"private":(s.ph?"placeholder":"live")}</span> <span class="dot check" id="d-${i}"></span></td>
+  <td id="p-${i}" style="color:var(--dim)"><span class="skl" style="width:70px"></span></td>
+  <td><span class="lg">
+    ${s.gsc?`<a class="bt" href="${GSC(s.gsc)}" target="_blank">GSC</a>`:""}
+    ${s.repo?`<a class="bt" href="${G+s.repo}" target="_blank">repo</a><a class="bt" href="${G+s.repo}/actions" target="_blank">↗</a>`:""}
+  </span></td>
+  <td><button class="cmbt" data-k="s:${i}" onclick="cmToggle('s:${i}',this)"></button></td>
+ </tr>`).join("");
+ document.querySelectorAll(".cmbt[data-k]").forEach(b=>cmBadge(b,b.dataset.k));
+}
+function ping(){
+ let up=0,done=0;const doneAll=()=>{done++;if(done===sites.length){localStorage.setItem("spoc_up",up);$("upcount").textContent=up+" / "+sites.length+" up";drawHealth();kpis()}};
+ sites.forEach((s,i)=>{const dot=$("d-"+i);if(!dot)return doneAll();
+  let fin=false;const t=setTimeout(()=>{if(!fin){fin=true;dot.className="dot bad";doneAll()}},7000);
+  const img=new Image();
+  img.onload=()=>{if(!fin){fin=true;clearTimeout(t);dot.className="dot ok";up++;doneAll()}};
+  img.onerror=()=>{if(!fin){fin=true;clearTimeout(t);dot.className="dot bad";doneAll()}};
+  img.src=s.u.replace(/\/$/,"")+"/favicon.ico?"+Date.now()});
+}
+async function pushes(){
+ let rate=false;
+ await Promise.all(sites.map(async(s,i)=>{
+  const el=$("p-"+i);if(!el)return;
+  if(!s.repo){el.textContent="—";return}
+  if(s.priv){el.textContent="🔒 private repo";return}
+  try{const r=await fetch(API+s.repo,{headers:{Accept:"application/vnd.github+json"}});
+   if(r.status===403){rate=true;el.textContent="rate-limited";return}
+   if(!r.ok){el.textContent="—";return}
+   const d=await r.json();el.innerHTML=`⇡ <b>${ago(d.pushed_at)}</b>`}
+  catch(e){el.textContent="offline?"}}));
+ if(rate)toast("GitHub rate limit — some data cached");
+}
+
+/* ============ pipeline ============ */
+function renderPend(){
+ $("pgrid").innerHTML=pend.map((p,i)=>`
+ <div class="pitem" style="animation-delay:${.04*i}s">
+   <div style="display:flex;align-items:center;gap:8px"><span class="nm">${p.n}</span><span style="flex:1"></span>
+     <button class="cmbt" data-k="p:${i}" onclick="cmToggle('p:${i}',this)"></button></div>
+   <div class="st">${p.s}</div>
+   <div style="margin-top:7px"><a class="bt" href="${G+p.repo}" target="_blank">repo</a></div>
+   <div class="cmbox" style="display:none"></div>
+ </div>`).join("");
+ document.querySelectorAll(".cmbt[data-k^='p:']").forEach(b=>cmBadge(b,b.dataset.k));
+}
+
+/* ============ domains ============ */
+async function checkDomains(btn){
+ if(btn){btn.classList.add("spin");setTimeout(()=>btn.classList.remove("spin"),800)}
+ $("dl").innerHTML=domains.map(x=>`<span class="bt" style="cursor:default">${x} <span class="skl" style="width:34px;display:inline-block"></span></span>`).join("");
+ await Promise.all(domains.map(async(x,i)=>{
+  let s="❓",okc=false;
+  try{const r=await fetch("https://rdap.org/domain/"+x);okc=!r.ok;s=r.ok?"🔴 taken":"🟢 available"}catch(e){}
+  $("dl").children[i].innerHTML=`${x} · ${s}`;$("dl").children[i].style.color=okc?"var(--ok)":""}));
+ toast("RDAP check done");
+}
+
+/* ============ refresh engine ============ */
+function refreshSection(sec,btn,silent){
+ if(btn&&btn.classList.contains("rbtn")){btn.classList.add("spin");setTimeout(()=>btn.classList.remove("spin"),900)}
+ if(sec==="sites"){renderSites();ping();pushes()}
+ if(sec==="pipeline")renderPend();
+ if(sec==="overview"){kpis();drawHealth();activity()}
+}
+function refreshAll(){refreshSection("sites");refreshSection("overview");toast("Refreshed ✓")}
+
+/* ============ boot ============ */
+$("notes").value=localStorage.getItem("spoc_notes")||"";
+$("notes").addEventListener("input",()=>localStorage.setItem("spoc_notes",$("notes").value));
+document.querySelectorAll(".cmbt:not([data-k])").forEach(b=>{const m=(b.getAttribute("onclick")||"").match(/'([^']+)'/);if(m)b.dataset.k=m[1]});
+kpis();renderSites();ping();pushes();renderPend();drawHealth();activity();updateBadges();
+(function clk(){const n=new Date();$("clk").textContent=n.toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata",hour12:false})+" IST";setTimeout(clk,1000)})();
+</script>
+</body>
+</html>

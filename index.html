@@ -148,6 +148,7 @@ ul.facts b{color:var(--acc2)}
       <button class="hamb" onclick="toggleNav()">☰</button>
       <div><h1 id="ptitle">Overview</h1><div class="sub" id="psub">Everything, one page · auto-refreshing</div></div>
       <div class="right">
+        <a class="rbtn" href="zenith.html" style="text-decoration:none">🎨 Zenith UI</a>
         <span class="clock" id="clock">--:--:--</span>
         <button class="rbtn" id="allbtn" onclick="refreshAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 3v6h-6"/></svg>Refresh all</button>
       </div>
@@ -312,6 +313,7 @@ function renderSites(){
      ${s.gsc?`<a class="chip" href="${GSC(s.gsc)}" target="_blank">GSC</a>`:""}
      ${s.repo?`<a class="chip" href="${G+s.repo}" target="_blank">repo</a><a class="chip" href="${G+s.repo}/actions" target="_blank">actions</a>`:""}
      <span class="chip" onclick="navigator.clipboard&&navigator.clipboard.writeText('${s.u}').then(()=>toast('URL copied ✓'))">copy</span>
+     <span class="chip" onclick="cmToggle('s:${i}',this)">💬${cmCount("s:"+i)||""}</span>
    </div></div>`).join("");
 }
 function pingSites(){let up=0,done=0;
@@ -343,7 +345,7 @@ async function ghFetch(){
 
 /* ================= pipeline ================= */
 function renderPend(){
- $("pendgrid").innerHTML=pend.map((p,i)=>`<div class="pitem" style="animation-delay:${.05*i}s"><div class="nm">${p.n}</div><div class="st">${p.s}</div><div style="margin-top:7px"><a class="chip" href="${G+p.repo}" target="_blank">repo</a> <a class="chip" href="https://${p.repo.replace(/[^a-zA-Z0-9-]/g,'').toLowerCase().replace(/-/g,'')}.pages.dev" target="_blank" hidden></a></div></div>`).join("");
+ $("pendgrid").innerHTML=pend.map((p,i)=>`<div class="pitem" style="animation-delay:${.05*i}s"><div class="nm">${p.n}</div><div class="st">${p.s}</div><div style="margin-top:7px"><a class="chip" href="${G+p.repo}" target="_blank">repo</a> <span class="chip" onclick="cmToggle('p:${i}',this)">💬${cmCount("p:"+i)||""}</span></div></div>`).join("");
 }
 
 /* ================= domains ================= */
@@ -378,6 +380,28 @@ renderSites();pingSites();ghFetch();
 buildStats();
 (function clock(){const now=new Date();$("clock").textContent=now.toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata",hour12:false})+" IST";setTimeout(clock,1000)})();
 setTimeout(()=>{const up=localStorage.getItem("spoc_up");if(up)toast(sites.length+" sites · "+up+" reachable")},1200);
+
+/* ===== comments engine (shared with Zenith UI, same storage key) ===== */
+function cAll(){return JSON.parse(localStorage.getItem("spoc_comments_v1")||"{}")}
+function cmAdd(k,t){const d=cAll();(d[k]=d[k]||[]).push({t:t,at:Date.now()});localStorage.setItem("spoc_comments_v1",JSON.stringify(d))}
+function cmDel(k,i){const d=cAll();(d[k]=d[k]||[]).splice(i,1);localStorage.setItem("spoc_comments_v1",JSON.stringify(d))}
+function cmCount(k){return (cAll()[k]||[]).length}
+function cmRender(box,k){
+ const list=(cAll()[k]||[]).map((c,i)=>`<div class="cm" style="position:relative;background:var(--panel2);border-radius:8px;padding:6px 10px;font-size:.78rem;margin-bottom:6px">${c.t}<span style="color:var(--faint);font-size:.66rem;margin-left:6px">${new Date(c.at).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}</span><button onclick="cmDel('${k}',${i});cmRender(this.closest('.cmbox'),'${k}')" style="position:absolute;top:3px;right:8px;background:none;border:none;color:var(--faint);cursor:pointer">✕</button></div>`).join("");
+ box.innerHTML=(list||`<div style="color:var(--faint);font-size:.74rem">no comments yet</div>`)+`<div class="cmin" style="display:flex;gap:6px"><input placeholder="# add a comment…" onkeydown="if(event.key==='Enter'&&this.value.trim()){cmAdd('${k}',this.value.trim());this.value='';cmRender(this.closest('.cmbox'),'${k}')}" style="flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--txt);font-family:inherit;font-size:.8rem"></div>`;
+}
+function cmToggle(k,btn){
+ const host=btn.closest(".site,.pitem,.card");
+ const old=host.querySelector('.cmbox[data-k="'+k+'"]');
+ if(old){old.remove();return}
+ const box=document.createElement("div");box.className="cmbox";box.dataset.k=k;box.style.cssText="display:block;margin-top:8px;border-top:1px dashed var(--line);padding-top:8px";host.appendChild(box);
+ cmRender(box,k);box.querySelector("input").focus();
+}
+document.querySelectorAll(".shead").forEach(h=>{
+ const sec=h.closest(".sec").id.replace("s-","");
+ const b=document.createElement("button");b.className="rbtn";b.textContent="💬"+(cmCount("sec:"+sec)||"");
+ b.onclick=()=>cmToggle("sec:"+sec,b);h.appendChild(b);
+});
 </script>
 </body>
 </html>
