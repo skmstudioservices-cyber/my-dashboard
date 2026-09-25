@@ -5,128 +5,252 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="googlebot" content="noindex, nofollow">
-<title>SKM SPOC — Single Point of Control</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111827'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23f59e0b' font-family='Arial' font-weight='bold'>S</text></svg>">
+<title>SKM SPOC — Control Room</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230ea5e9'/><text x='50' y='70' font-size='54' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>S</text></svg>">
 <style>
 :root{
-  --bg:#0b1120; --panel:#111827; --panel2:#161f33; --line:#243049;
-  --txt:#e5e9f0; --dim:#8b97ab; --acc:#f59e0b; --acc2:#fbbf24;
-  --ok:#22c55e; --bad:#ef4444; --warn:#eab308; --unknown:#64748b;
+  --bg:#0a0f1e; --bg2:#0d1425; --panel:#111a30; --panel2:#16213c; --line:#1f2d4d;
+  --txt:#e8edf7; --dim:#8294b0; --faint:#5a6a85;
+  --acc:#38bdf8; --acc2:#7dd3fc; --accsoft:rgba(56,189,248,.12);
+  --ok:#34d399; --bad:#f87171; --warn:#fbbf24; --unk:#64748b;
+  --r:14px; --sb:230px; --sh:0 8px 30px rgba(0,0,0,.35);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;padding:20px;max-width:1200px;margin:0 auto}
-h1{font-size:1.5rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:#3f2d04;color:var(--acc2);border:1px solid #7c5a08;letter-spacing:.5px}
-.sub{color:var(--dim);font-size:.85rem;margin-top:4px}
-h2{font-size:1.02rem;color:var(--acc2);margin:28px 0 12px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--line);padding-bottom:6px}
-.grid{display:grid;gap:10px}
-.quick{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-.sites{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-.pend{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-a{color:#7ab8ff;text-decoration:none}
-a:hover{text-decoration:underline}
-.btn{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--txt);font-weight:600;font-size:.9rem;text-align:center;transition:.15s}
-.btn:hover{border-color:var(--acc);transform:translateY(-1px);text-decoration:none;color:var(--acc2)}
-.btn small{display:block;font-weight:400;color:var(--dim);font-size:.72rem;margin-top:2px}
-.site{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 500px at 80% -10%,rgba(56,189,248,.07),transparent),radial-gradient(900px 400px at -10% 110%,rgba(52,211,153,.05),transparent),var(--bg);color:var(--txt);font-family:ui-sans-serif,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh}
+a{color:var(--acc2);text-decoration:none}
+a:hover{text-decoration:none}
+
+/* ===== layout ===== */
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sb);flex:none;background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px solid var(--line);position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;padding:18px 12px;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 10px 18px}
+.brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#0ea5e9,#6366f1);display:grid;place-items:center;font-weight:800;font-size:1.15rem;color:#fff;box-shadow:0 4px 14px rgba(14,165,233,.4)}
+.brand b{font-size:1.02rem;letter-spacing:.3px}
+.brand small{display:block;color:var(--faint);font-size:.68rem;font-weight:400}
+.nav{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--dim);font-size:.88rem;font-weight:600;cursor:pointer;transition:all .18s;border:1px solid transparent}
+.nav a .ic{width:20px;text-align:center;font-size:1rem}
+.nav a:hover{color:var(--txt);background:var(--panel);transform:translateX(2px)}
+.nav a.on{color:var(--acc2);background:var(--accsoft);border-color:rgba(56,189,248,.25)}
+.nav a.on .ic{filter:drop-shadow(0 0 6px rgba(56,189,248,.6))}
+.sbfoot{margin-top:auto;padding:12px 10px;border-top:1px solid var(--line);color:var(--faint);font-size:.7rem;line-height:1.6}
+.pill{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.6px;padding:2px 9px;border-radius:999px;background:rgba(52,211,153,.12);color:var(--ok);border:1px solid rgba(52,211,153,.3)}
+.main{flex:1;margin-left:var(--sb);padding:22px 26px 60px;max-width:1150px}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.topbar h1{font-size:1.35rem;letter-spacing:.2px}
+.topbar .sub{color:var(--dim);font-size:.8rem;margin-top:2px}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.clock{font-family:ui-monospace,monospace;font-size:.85rem;color:var(--acc2);background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:9px}
+.hamb{display:none;background:var(--panel);border:1px solid var(--line);color:var(--txt);font-size:1.2rem;border-radius:9px;padding:6px 12px;cursor:pointer}
+
+/* ===== sections & cards ===== */
+.sec{display:none}
+.sec.on{display:block;animation:secin .35s cubic-bezier(.2,.7,.3,1)}
+@keyframes secin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.shead{display:flex;align-items:center;gap:12px;margin:26px 0 14px}
+.shead:first-child{margin-top:0}
+.shead h2{font-size:.95rem;text-transform:uppercase;letter-spacing:1.4px;color:var(--acc2);display:flex;align-items:center;gap:8px}
+.shead .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.rbtn{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .18s}
+.rbtn:hover{color:var(--acc2);border-color:var(--acc);transform:translateY(-1px)}
+.rbtn.spin svg{animation:rot .9s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.rbtn svg{width:12px;height:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;transition:all .22s;animation:cardin .4s both}
+@keyframes cardin{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.35);box-shadow:var(--sh)}
+.grid{display:grid;gap:12px}
+.qj{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
+.sites{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.pend{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.stats{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+
+/* overview stats */
+.stat{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;animation:cardin .5s both}
+.stat::after{content:'';position:absolute;inset:auto -30% -60% auto;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.13),transparent 70%)}
+.stat .v{font-size:1.9rem;font-weight:800;font-variant-numeric:tabular-nums}
+.stat .l{color:var(--dim);font-size:.75rem;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-top:2px}
+
+/* buttons (quick jump) */
+.btn{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 12px;color:var(--txt);font-weight:700;font-size:.88rem;text-align:center;transition:all .2s;animation:cardin .4s both}
+.btn:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:0 6px 20px rgba(56,189,248,.15);color:var(--acc2)}
+.btn small{display:block;font-weight:500;color:var(--faint);font-size:.7rem;margin-top:3px}
+
+/* site cards */
 .site .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .site .nm{font-weight:700;font-size:.95rem}
+.site .nm a{color:var(--txt)}
+.site .nm a:hover{color:var(--acc2)}
+.site .tag{color:var(--dim);font-size:.74rem;margin-top:2px}
+.site .meta{margin-top:9px;font-size:.72rem;color:var(--faint);min-height:15px;display:flex;align-items:center;gap:6px}
 .site .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.chip{font-size:.72rem;padding:3px 9px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
-.chip:hover{color:var(--acc2);border-color:var(--acc);text-decoration:none}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--unknown);display:inline-block;flex:none;margin-top:5px;box-shadow:0 0 6px rgba(0,0,0,.5)}
-.dot.ok{background:var(--ok);box-shadow:0 0 8px rgba(34,197,94,.6)}
-.dot.bad{background:var(--bad)}
-ul.facts{list-style:none}
-ul.facts li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:.87rem}
-ul.facts li:last-child{border:none}
-ul.facts b{color:var(--acc2)}
-.pitem{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.83rem}
+.chip{font-size:.71rem;padding:3px 10px;border-radius:7px;background:var(--panel2);border:1px solid var(--line);color:var(--dim);transition:all .15s;cursor:pointer}
+.chip:hover{color:var(--acc2);border-color:var(--acc)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--unk);display:inline-block;flex:none;transition:all .3s}
+.dot.check{background:var(--warn);animation:pulse 1.1s infinite}
+.dot.ok{background:var(--ok);box-shadow:0 0 9px rgba(52,211,153,.75);animation:pulse 2.4s infinite}
+.dot.bad{background:var(--bad);box-shadow:0 0 8px rgba(248,113,113,.6)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.skl{display:inline-block;height:9px;border-radius:4px;background:linear-gradient(90deg,var(--panel2) 25%,var(--line) 50%,var(--panel2) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-200% 0}}
+
+/* pipeline + facts */
+.pitem{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:.83rem;transition:all .2s;animation:cardin .4s both}
+.pitem:hover{transform:translateY(-2px);border-color:rgba(251,191,36,.35)}
 .pitem .nm{font-weight:700;margin-bottom:3px}
 .pitem .st{color:var(--warn);font-size:.72rem}
-.pitem .st2{color:var(--dim);font-size:.72rem}
-.notes{width:100%;min-height:110px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-family:inherit;font-size:.88rem;resize:vertical}
+ul.facts{list-style:none}
+ul.facts li{padding:9px 2px;border-bottom:1px dashed var(--line);font-size:.87rem;animation:cardin .4s both}
+ul.facts li:last-child{border:none}
+ul.facts b{color:var(--acc2)}
+.kbd{font-family:ui-monospace,monospace;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.78rem}
+
+.notes{width:100%;min-height:130px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:14px;font-family:inherit;font-size:.9rem;resize:vertical;transition:border-color .2s}
 .notes:focus{outline:none;border-color:var(--acc)}
-.foot{margin-top:34px;color:var(--dim);font-size:.75rem;text-align:center;border-top:1px solid var(--line);padding-top:14px}
-.kbd{font-family:monospace;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:.78rem}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--panel2);border:1px solid rgba(52,211,153,.4);color:var(--ok);padding:10px 18px;border-radius:10px;font-size:.83rem;font-weight:600;opacity:0;transform:translateY(12px);transition:all .3s;z-index:99;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.overlay{display:none;position:fixed;inset:0;background:rgba(3,7,18,.6);z-index:40;backdrop-filter:blur(2px)}
+.foot{margin-top:38px;color:var(--faint);font-size:.73rem;text-align:center;border-top:1px solid var(--line);padding-top:16px}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-105%)}
+  .sidebar.open{transform:none;box-shadow:var(--sh)}
+  .overlay.on{display:block}
+  .main{margin-left:0;padding:16px 14px 50px}
+  .hamb{display:block}
+  .topbar h1{font-size:1.1rem}
+}
 </style>
 </head>
 <body>
+<div class="overlay" id="ov" onclick="toggleNav(false)"></div>
+<div class="app">
+  <nav class="sidebar" id="sb">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div><b>SKM SPOC</b><small>Single Point of Control</small></div>
+    </div>
+    <div class="nav" id="nav">
+      <a data-s="overview" class="on"><span class="ic">📊</span>Overview</a>
+      <a data-s="sites"><span class="ic">🌐</span>Live Sites</a>
+      <a data-s="pipeline"><span class="ic">🚧</span>Pipeline</a>
+      <a data-s="deploys"><span class="ic">🚀</span>Deploys</a>
+      <a data-s="vitals"><span class="ic">📋</span>Vitals</a>
+      <a data-s="notion"><span class="ic">🧠</span>Notion</a>
+      <a data-s="domains"><span class="ic">🔍</span>Domains</a>
+      <a data-s="notes"><span class="ic">📝</span>Notes</a>
+    </div>
+    <div class="sbfoot"><span class="pill">PRIVATE</span><br>robots noindex · your eyes only<br>repo: my-dashboard</div>
+  </nav>
+  <div class="main">
+    <div class="topbar">
+      <button class="hamb" onclick="toggleNav()">☰</button>
+      <div><h1 id="ptitle">Overview</h1><div class="sub" id="psub">Everything, one page · auto-refreshing</div></div>
+      <div class="right">
+        <span class="clock" id="clock">--:--:--</span>
+        <button class="rbtn" id="allbtn" onclick="refreshAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12a9 9 0 1 1-2.6-6.3M21 3v6h-6"/></svg>Refresh all</button>
+      </div>
+    </div>
 
-<h1>🎯 SKM SPOC <span class="badge">PRIVATE</span></h1>
-<div class="sub">Single Point of Control — SKM Studio Network · one page for CF, GitHub, GSC, Notion & mail · <span id="upd">updated 25 Sep 2026</span></div>
+    <!-- ===== OVERVIEW ===== -->
+    <section class="sec on" id="s-overview">
+      <div class="grid stats" id="stats"></div>
+      <div class="shead"><h2>⚡ Quick Jump</h2><div class="ln"></div><button class="rbtn" onclick="toast('Links open in new tab — nothing to fetch here')">links</button></div>
+      <div class="grid qj">
+        <a class="btn" style="animation-delay:.02s" href="https://dash.cloudflare.com" target="_blank">☁️ Cloudflare<small>dashboard home</small></a>
+        <a class="btn" style="animation-delay:.05s" href="https://dash.cloudflare.com/?to=/:account/workers-and-pages" target="_blank">🚀 Workers & Pages<small>sites + quotas</small></a>
+        <a class="btn" style="animation-delay:.08s" href="https://github.com/skmstudioservices-cyber?tab=repositories" target="_blank">🐙 GitHub<small>all repos</small></a>
+        <a class="btn" style="animation-delay:.11s" href="https://search.google.com/search-console" target="_blank">📊 Search Console<small>indexing data</small></a>
+        <a class="btn" style="animation-delay:.14s" href="https://analytics.google.com" target="_blank">📈 Analytics<small>GA</small></a>
+        <a class="btn" style="animation-delay:.17s" href="https://mail.google.com" target="_blank">✉️ Gmail<small>skmstudio.services</small></a>
+        <a class="btn" style="animation-delay:.2s" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">🧠 Mission Control<small>Notion HQ</small></a>
+        <a class="btn" style="animation-delay:.23s" href="https://dash.cloudflare.com/?to=/:account/observability" target="_blank">🩺 Observability<small>bot + quota logs</small></a>
+      </div>
+    </section>
 
-<h2>⚡ Quick Jump</h2>
-<div class="grid quick">
-  <a class="btn" href="https://dash.cloudflare.com" target="_blank">☁️ Cloudflare<small>dashboard home</small></a>
-  <a class="btn" href="https://dash.cloudflare.com/?to=/:account/workers-and-pages" target="_blank">🚀 Workers & Pages<small>all sites + quotas</small></a>
-  <a class="btn" href="https://github.com/skmstudioservices-cyber?tab=repositories" target="_blank">🐙 GitHub<small>all 18 repos</small></a>
-  <a class="btn" href="https://search.google.com/search-console" target="_blank">📊 Search Console<small>indexing + performance</small></a>
-  <a class="btn" href="https://analytics.google.com" target="_blank">📈 Analytics<small>GA (once wired)</small></a>
-  <a class="btn" href="https://mail.google.com" target="_blank">✉️ Gmail<small>skmstudio.services</small></a>
-  <a class="btn" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">🧠 Mission Control<small>Notion HQ</small></a>
-  <a class="btn" href="https://dash.cloudflare.com/?to=/:account/observability" target="_blank">🩺 CF Observability<small>bot + quota logs</small></a>
+    <!-- ===== SITES ===== -->
+    <section class="sec" id="s-sites">
+      <div class="shead"><h2>🌐 Live Sites</h2><div class="ln"></div>
+        <button class="rbtn" onclick="refreshSection('sites',this)">⟳ refresh · <span id="sitecount">…</span></button></div>
+      <div class="grid sites" id="sitesgrid"></div>
+    </section>
+
+    <!-- ===== PIPELINE ===== -->
+    <section class="sec" id="s-pipeline">
+      <div class="shead"><h2>🚧 Pipeline</h2><div class="ln"></div><button class="rbtn" onclick="refreshSection('pipeline',this)">⟳ refresh</button></div>
+      <div class="grid pend" id="pendgrid"></div>
+    </section>
+
+    <!-- ===== DEPLOYS ===== -->
+    <section class="sec" id="s-deploys">
+      <div class="shead"><h2>🚀 Deploy / Actions</h2><div class="ln"></div><button class="rbtn" onclick="toast('Buttons open GitHub Actions — click Run workflow')">links</button></div>
+      <div class="grid qj">
+        <a class="btn" style="animation-delay:.02s" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/deploy.yml" target="_blank">▶ deploy.yml<small>digipincode Workers</small></a>
+        <a class="btn" style="animation-delay:.05s" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/pages-mirror.yml" target="_blank">▶ pages-mirror.yml<small>digipincode Pages</small></a>
+        <a class="btn" style="animation-delay:.08s" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect</small></a>
+        <a class="btn" style="animation-delay:.11s" href="https://github.com/skmstudioservices-cyber/bloodbanksnearme/actions" target="_blank">🩸 bloodbanksnearme<small>prototype ready</small></a>
+      </div>
+    </section>
+
+    <!-- ===== VITALS ===== -->
+    <section class="sec" id="s-vitals">
+      <div class="shead"><h2>📋 Vitals & Quotas</h2><div class="ln"></div><button class="rbtn" onclick="toast('Static ops facts — check GSC manually for live numbers')">info</button></div>
+      <div class="card">
+      <ul class="facts" id="vitals">
+        <li><b>D1 quota:</b> 100k reads/day · resets <b>05:30 IST</b> · SSR sites were dying <b>~17:30 IST</b> — should improve after 25 Sep robots fixes</li>
+        <li><b>AI bots blocked:</b> ~50 bots (54 UA groups) across 4 SSR sites — quota reserved for Googlebot/Bingbot</li>
+        <li><b>Sitemap lean:</b> 302,685 → <b>3,177 URLs</b> (99% cut) — resubmitted to GSC 25 Sep</li>
+        <li><b>GSC manual indexing:</b> ~10 requests/day — don't waste on bulk; sitemap + crawl is the path</li>
+        <li><b>Watch window:</b> Discovered → Indexed flips expected <b>28 Sep – 2 Oct</b> · check impressions on both digipincode properties</li>
+        <li><b>Canonical watch:</b> Google prefers <span class="kbd">digipincode.pages.dev</span>; sitemap lives on workers.dev property</li>
+        <li><b>Never mention "6 months"</b> on skmstudio.com (until ~23 Mar 2027) · no new tokens · no CF upgrade</li>
+      </ul>
+      </div>
+    </section>
+
+    <!-- ===== NOTION ===== -->
+    <section class="sec" id="s-notion">
+      <div class="shead"><h2>🧠 Notion Control Room</h2><div class="ln"></div><button class="rbtn" onclick="toast('Opening Notion pages directly')">links</button></div>
+      <div class="grid qj">
+        <a class="btn" style="animation-delay:.02s" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">Mission Control<small>master plan</small></a>
+        <a class="btn" style="animation-delay:.05s" href="https://www.notion.so/3e4d732a925f815ead2de08a55b53f08" target="_blank">Conversation Log<small>session history</small></a>
+        <a class="btn" style="animation-delay:.08s" href="https://www.notion.so/3e4d732a925f8142a5e1fccfadc079e5" target="_blank">RTO Build Plan<small>niche roadmap</small></a>
+        <a class="btn" style="animation-delay:.11s" href="https://www.notion.so/3e1d732a925f8189b544ce3c8024ebb6" target="_blank">Mistake Log<small>lessons learned</small></a>
+      </div>
+    </section>
+
+    <!-- ===== DOMAINS ===== -->
+    <section class="sec" id="s-domains">
+      <div class="shead"><h2>🔍 Domain Watchlist</h2><div class="ln"></div><button class="rbtn" onclick="checkDomains()">⟳ check now</button></div>
+      <div class="card" style="font-size:.9rem">
+        <div id="dlist" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+        <div class="sub" style="margin-top:10px;color:var(--dim);font-size:.78rem">Blood bank mission domains — grab before building bloodbanksnearme.</div>
+      </div>
+    </section>
+
+    <!-- ===== NOTES ===== -->
+    <section class="sec" id="s-notes">
+      <div class="shead"><h2>📝 Quick Notes</h2><div class="ln"></div><button class="rbtn" onclick="saveNotes()">💾 save</button></div>
+      <textarea class="notes" id="notes" placeholder="Type anything — stays on this device (localStorage)..."></textarea>
+    </section>
+
+    <div class="foot">🔒 Private · robots Disallow-all + noindex · hosted at <span class="kbd">my-dashboard-2av.pages.dev</span> from repo <span class="kbd">my-dashboard</span> · SKM Studio Network</div>
+  </div>
 </div>
-
-<h2>🌐 Live Sites <span style="font-size:.7rem;color:var(--dim)">● green = reachable just now (favicon ping)</span></h2>
-<div class="grid sites" id="sites"></div>
-
-<h2>🚧 Pipeline — placeholder live, real build pending</h2>
-<div class="grid pend" id="pend"></div>
-
-<h2>🚀 Deploy / Actions</h2>
-<div class="grid quick">
-  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/deploy.yml" target="_blank">▶ deploy.yml<small>digipincode Workers</small></a>
-  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/pages-mirror.yml" target="_blank">▶ pages-mirror.yml<small>digipincode Pages</small></a>
-  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect + spoc deploy</small></a>
-  <a class="btn" href="https://github.com/skmstudioservices-cyber/bloodbanksnearme/actions" target="_blank">🩸 bloodbanksnearme<small>prototype ready</small></a>
-</div>
-
-<h2>📋 Vitals & Quotas</h2>
-<div class="card">
-<ul class="facts">
-  <li><b>D1 quota:</b> 100k reads/day · resets <b>05:30 IST</b> · SSR sites were dying <b>~17:30 IST</b> — should improve after 25 Sep robots fixes</li>
-  <li><b>AI bots blocked:</b> ~50 bots (54 UA groups) across 4 SSR sites — quota now reserved for Googlebot/Bingbot</li>
-  <li><b>Sitemap lean:</b> 302,685 → <b>3,177 URLs</b> (99% cut) — resubmitted to GSC 25 Sep</li>
-  <li><b>GSC manual indexing:</b> ~10 requests/day — don't waste on bulk; sitemap + crawl is the path</li>
-  <li><b>Watch window:</b> Discovered → Indexed flips expected <b>28 Sep – 2 Oct</b> · check impressions on both digipincode properties</li>
-  <li><b>Canonical watch:</b> Google prefers <span class="kbd">digipincode.pages.dev</span>; sitemap lives on workers.dev property — keep an eye</li>
-  <li><b>Never mention "6 months"</b> on skmstudio.com (until ~23 Mar 2027) · no new tokens · no CF upgrade</li>
-</ul>
-</div>
-
-<h2>🧠 Notion Control Room</h2>
-<div class="grid quick">
-  <a class="btn" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">Mission Control<small>master plan</small></a>
-  <a class="btn" href="https://www.notion.so/3e4d732a925f815ead2de08a55b53f08" target="_blank">Conversation Log<small>session history</small></a>
-  <a class="btn" href="https://www.notion.so/3e4d732a925f8142a5e1fccfadc079e5" target="_blank">RTO Build Plan<small>niche roadmap</small></a>
-  <a class="btn" href="https://www.notion.so/3e1d732a925f8189b544ce3c8024ebb6" target="_blank">Mistake Log<small>lessons learned</small></a>
-</div>
-
-<h2>🔍 Domain Watchlist (available as of 24 Sep)</h2>
-<div class="card" style="font-size:.9rem">
-  <span class="chip">raktsanchaar.com</span> <span class="chip">raktsanchaar.in</span> <span class="chip">madadnumber.com</span> <span class="chip">madadsanket.com</span>
-  <div class="sub" style="margin-top:8px">Blood bank mission domains — grab before building bloodbanksnearme.</div>
-</div>
-
-<h2>📝 Quick Notes <span style="font-size:.7rem;color:var(--dim)">saved in this browser only</span></h2>
-<textarea class="notes" id="notes" placeholder="Type anything — it stays on this device (localStorage)..."></textarea>
-
-<div class="foot">
-  🔒 Private — robots Disallow-all + noindex · hosted at <span class="kbd">skm-spoc.pages.dev</span> from repo <span class="kbd">my-dashboard</span> · SKM Studio Network
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-const G = "https://github.com/skmstudioservices-cyber/";
-const GSC = q => "https://search.google.com/search-console?resource_id=" + encodeURIComponent(q);
-const sites = [
- {n:"digipincode (Workers)",u:"https://digipincode.india-in.workers.dev",repo:"digipincode-india",gsc:"https://digipincode.india-in.workers.dev/",tag:"SSR · D1 quota"},
- {n:"digipincode (Pages)",u:"https://digipincode.pages.dev",repo:"digipincode-india",gsc:"https://digipincode.pages.dev/",tag:"mirror · canonical host"},
+/* ================= data ================= */
+const G="https://github.com/skmstudioservices-cyber/", API="https://api.github.com/repos/skmstudioservices-cyber/";
+const GSC=q=>"https://search.google.com/search-console?resource_id="+encodeURIComponent(q);
+const sites=[
+ {n:"digipincode (Workers)",u:"https://digipincode.india-in.workers.dev",repo:"digipincode-india",priv:1,gsc:"https://digipincode.india-in.workers.dev/",tag:"SSR · D1 quota"},
+ {n:"digipincode (Pages)",u:"https://digipincode.pages.dev",repo:"digipincode-india",priv:1,gsc:"https://digipincode.pages.dev/",tag:"mirror · canonical host"},
  {n:"mapsnearme",u:"https://mapsnearme.pages.dev",repo:"mapsnearme",gsc:"https://mapsnearme.pages.dev/",tag:"static · quota-immune"},
- {n:"dashboardmapsnearme",u:"https://dashboardmapsnearme.pages.dev",repo:"dashboardmapsnearme",tag:"static"},
+ {n:"dashboardmapsnearme",u:"https://dashboardmapsnearme.pages.dev",repo:"dashboardmapsnearme",tag:"static · Supabase admin"},
  {n:"examstatus",u:"https://examstatus.india-in.workers.dev",repo:"examstatus",gsc:"https://examstatus.india-in.workers.dev/",tag:"SSR · bridge deploy"},
- {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · content sprint 29 Oct"},
+ {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · sprint 29 Oct"},
  {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",tag:"static tools"},
  {n:"skmstudio.com",u:"https://skmstudio.com",tag:"brand site"},
  {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",tag:"placeholder · robots Disallow (safety)"},
@@ -137,23 +261,7 @@ const sites = [
  {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",tag:"placeholder"},
  {n:"Safe-Alleys 🛡️",u:"https://safealleys.pages.dev",repo:"Safe-Alleys",tag:"NEW · safety PWA planned (Notion plan)"},
 ];
-const el = document.getElementById("sites");
-sites.forEach(s=>{
-  const d = document.createElement("div"); d.className="site";
-  let g = s.gsc?`<a class="chip" href="${GSC(s.gsc)}" target="_blank">GSC</a>`:"";
-  let r = s.repo?`<a class="chip" href="${G+s.repo}" target="_blank">repo</a>
-   <a class="chip" href="${G+s.repo}/actions" target="_blank">actions</a>`:"";
-  d.innerHTML = `<div class="top"><div><div class="nm"><a href="${s.u}" target="_blank">${s.n}</a></div>
-   <div class="sub">${s.tag}</div></div><span class="dot" id="dot-${s.n.replace(/[^a-z]/gi,'')}"></span></div>
-   <div class="row">${g}${r}<span class="chip" style="cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText('${s.u}')">copy URL</span></div>`;
-  el.appendChild(d);
-  const dot = d.querySelector(".dot"), img = new Image();
-  let done=false; const t=setTimeout(()=>{if(!done){done=true;dot.classList.add("bad")}},7000);
-  img.onload=()=>{if(!done){done=true;clearTimeout(t);dot.classList.add("ok")}};
-  img.onerror=()=>{if(!done){done=true;clearTimeout(t);dot.classList.add("bad")}};
-  img.src = s.u.replace(/\/$/,"") + "/favicon.ico?" + Date.now();
-});
-const pend = [
+const pend=[
  {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — call-verify numbers before launch",repo:"bloodbanksnearme"},
  {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
  {n:"cngpumpsnearme",s:"placeholder live — content build pending",repo:"cngpumpsnearme"},
@@ -161,17 +269,115 @@ const pend = [
  {n:"restareanearme",s:"placeholder live — content build pending",repo:"restareanearme"},
  {n:"Aadhaar-Seva-Kendra",s:"placeholder live — content build pending",repo:"Aadhaar-Seva-Kendra-near-me"},
 ];
-const pl = document.getElementById("pend");
-pend.forEach(p=>{
-  const d=document.createElement("div"); d.className="pitem";
-  d.innerHTML=`<div class="nm">${p.n}</div><div class="st">${p.s}</div>
-  <div style="margin-top:6px"><a class="chip" href="${G+p.repo}" target="_blank">repo</a></div>`;
-  pl.appendChild(d);
+const domains=["raktsanchaar.com","raktsanchaar.in","madadnumber.com","madadsanket.com"];
+const SUBS={overview:["Overview","Everything, one page · auto-refreshing"],sites:["Live Sites","Reachability + GitHub activity · auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Availability check via RDAP"],notes:["Quick Notes","Saved locally in this browser"]};
+
+/* ================= helpers ================= */
+const $=id=>document.getElementById(id);
+const ago=t=>{if(!t)return"";const s=(Date.now()-new Date(t))/1e3;if(s<3600)return Math.max(1,s/60|0)+"m ago";if(s<86400)return(s/3600|0)+"h ago";return(s/86400|0)+"d ago"};
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2200)}
+function toggleNav(force){const sb=$("sb"),ov=$("ov");const on=force!==undefined?force:!sb.classList.contains("open");sb.classList.toggle("open",on);ov.classList.toggle("on",on)}
+function saveNotes(){localStorage.setItem("spoc_notes",$("notes").value);toast("Notes saved ✓")}
+function animCount(el,val,suffix){const t0=performance.now(),d=800;const step=n=>{const p=Math.min(1,(n-t0)/d),e=1-Math.pow(1-p,3);el.textContent=(val>100?Math.round(val*e).toLocaleString("en-IN"):Math.round(val*e))+(suffix||"");if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+
+/* ================= nav ================= */
+const nav=document.querySelectorAll("#nav a");
+nav.forEach(a=>a.onclick=()=>{nav.forEach(x=>x.classList.remove("on"));a.classList.add("on");
+ document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on"));
+ $("s-"+a.dataset.s).classList.add("on");
+ $("ptitle").textContent=SUBS[a.dataset.s][0];$("psub").textContent=SUBS[a.dataset.s][1];
+ toggleNav(false);window.scrollTo({top:0});
+ if(a.dataset.s==="sites")refreshSection("sites",null,true);
+ if(a.dataset.s==="overview")buildStats();
 });
-const nt = document.getElementById("notes");
-nt.value = localStorage.getItem("spoc_notes")||"";
-nt.addEventListener("input",()=>localStorage.setItem("spoc_notes",nt.value));
-document.getElementById("upd").textContent = "updated " + new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+
+/* ================= overview stats ================= */
+function buildStats(){
+ const up=localStorage.getItem("spoc_up")?+localStorage.getItem("spoc_up"):0;
+ const items=[{v:sites.length,l:"Sites tracked"},{v:up||"—",l:"Reachable now",dyn:1},{v:pend.length,l:"In pipeline"},{v:54,l:"UA groups blocked"},{v:3177,l:"Sitemap URLs",fmt:1},{v:8,l:"AI/bot cuts on SSR"}];
+ $("stats").innerHTML=items.map((s,i)=>`<div class="stat" style="animation-delay:${.04*i}s"><div class="v" id="st-${i}">0</div><div class="l">${s.l}</div></div>`).join("");
+ items.forEach((s,i)=>{if(s.dyn){$("st-"+i).textContent=s.v}else animCount($("st-"+i),s.v,s.fmt?"":"")});
+}
+
+/* ================= sites section ================= */
+function renderSites(){
+ $("sitesgrid").innerHTML=sites.map((s,i)=>`
+ <div class="card site" style="animation-delay:${.03*i}s">
+   <div class="top"><div>
+     <div class="nm"><a href="${s.u}" target="_blank">${s.n}</a></div>
+     <div class="tag">${s.tag}</div></div>
+     <span class="dot check" id="dot-${i}"></span></div>
+   <div class="meta" id="meta-${i}"><span class="skl" style="width:110px"></span></div>
+   <div class="row">
+     ${s.gsc?`<a class="chip" href="${GSC(s.gsc)}" target="_blank">GSC</a>`:""}
+     ${s.repo?`<a class="chip" href="${G+s.repo}" target="_blank">repo</a><a class="chip" href="${G+s.repo}/actions" target="_blank">actions</a>`:""}
+     <span class="chip" onclick="navigator.clipboard&&navigator.clipboard.writeText('${s.u}').then(()=>toast('URL copied ✓'))">copy</span>
+   </div></div>`).join("");
+}
+function pingSites(){let up=0,done=0;
+ sites.forEach((s,i)=>{const dot=$("dot-"+i);if(!dot)return;dot.className="dot check";
+  let fin=false;const t=setTimeout(()=>{if(!fin){fin=true;dot.className="dot bad";check()}},7000);
+  const img=new Image();
+  const ok=()=>{if(!fin){fin=true;clearTimeout(t);dot.className="dot ok";up++;check()}};
+  const bad=()=>{if(!fin){fin=true;clearTimeout(t);dot.className="dot bad";check()}};
+  img.onload=ok;img.onerror=bad;img.src=s.u.replace(/\/$/,"")+"/favicon.ico?"+Date.now();
+  function check(){done++;$("sitecount").textContent=up+" / "+sites.length+" up";localStorage.setItem("spoc_up",up);const ov=$("st-1");if(ov&&done<=sites.length){ov.textContent=up;if(localStorage.getItem("spoc_seen")!=="1"&&done===sites.length){localStorage.setItem("spoc_seen","1")}}}
+ });
+}
+async function ghFetch(){
+ let rate=0;
+ await Promise.all(sites.map(async(s,i)=>{
+  const el=$("meta-"+i);if(!el)return;
+  if(!s.repo){el.innerHTML="·";return}
+  if(s.priv){el.innerHTML="🔒 private repo";return}
+  try{
+    const r=await fetch(API+s.repo,{headers:{Accept:"application/vnd.github+json"}});
+    if(r.status===403){rate=1;el.innerHTML="⏳ rate-limited (retry in 1h)";return}
+    if(!r.ok){el.innerHTML="—";return}
+    const d=await r.json();
+    el.innerHTML=`⇡ pushed <b>${ago(d.pushed_at)}</b>${d.description?" · "+d.description.slice(0,42):""}`;
+  }catch(e){el.innerHTML="offline?"}
+ }));
+ if(rate)toast("GitHub API rate limit — data cached");
+}
+
+/* ================= pipeline ================= */
+function renderPend(){
+ $("pendgrid").innerHTML=pend.map((p,i)=>`<div class="pitem" style="animation-delay:${.05*i}s"><div class="nm">${p.n}</div><div class="st">${p.s}</div><div style="margin-top:7px"><a class="chip" href="${G+p.repo}" target="_blank">repo</a> <a class="chip" href="https://${p.repo.replace(/[^a-zA-Z0-9-]/g,'').toLowerCase().replace(/-/g,'')}.pages.dev" target="_blank" hidden></a></div></div>`).join("");
+}
+
+/* ================= domains ================= */
+async function checkDomains(){
+ const d=$("dlist");
+ d.innerHTML=domains.map(x=>`<span class="chip" data-d="${x}" style="cursor:default">${x} <span class="skl" style="width:40px;display:inline-block"></span></span>`).join("");
+ await Promise.all(domains.map(async x=>{
+  let s="❓",c="";
+  try{const r=await fetch("https://rdap.org/domain/"+x,{method:"GET"});
+   s=r.ok?"🔴 taken":"🟢 available";c=r.ok?"":"ok";
+  }catch(e){s="❓ ?"}
+  const el=d.querySelector(`[data-d="${x}"]`);if(el)el.innerHTML=`${x} · ${s}`;
+ }));
+ toast("Domain check done (RDAP)");
+}
+
+/* ================= refresh engine ================= */
+function refreshSection(sec,btn,silent){
+ if(btn){btn.classList.add("spin");setTimeout(()=>btn.classList.remove("spin"),900)}
+ if(sec==="sites"){renderSites();pingSites();ghFetch()}
+ if(sec==="pipeline"){renderPend()}
+ if(sec==="domains"){checkDomains()}
+ if(sec==="overview"){buildStats()}
+}
+function refreshAll(){refreshSection("sites",null);refreshSection("overview");toast("All data refreshed ✓")}
+
+/* ================= boot ================= */
+$("notes").value=localStorage.getItem("spoc_notes")||"";
+$("notes").addEventListener("input",()=>localStorage.setItem("spoc_notes",$("notes").value));
+renderPend();
+renderSites();pingSites();ghFetch();
+buildStats();
+(function clock(){const now=new Date();$("clock").textContent=now.toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata",hour12:false})+" IST";setTimeout(clock,1000)})();
+setTimeout(()=>{const up=localStorage.getItem("spoc_up");if(up)toast(sites.length+" sites · "+up+" reachable")},1200);
 </script>
 </body>
 </html>
