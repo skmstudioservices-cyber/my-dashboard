@@ -21,7 +21,10 @@ function cfgInit(){
 function cfgSend(o){
  const wu=($("cfg-wu").value||"").trim().replace(/\/+$/,"");
  localStorage.setItem("spoc_worker",wu);localStorage.setItem("spoc_passcode",$("cfg-pc").value);
- return fetch(wu,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({passcode:$("cfg-pc").value},o))}).then(r=>r.json());
+ return fetch(wu,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({passcode:$("cfg-pc").value},o))}).then(async r=>{
+  const txt=await r.text();let d;
+  try{d=JSON.parse(txt)}catch(e){d={ok:false,error:(txt.indexOf("1027")>=0||r.status===403)?"Workers quota exhausted (error 1027) - account daily limit reached. Retry after 05:30 IST, OR paste your GSC codes in chat and I will commit them directly.":"worker error HTTP "+r.status+" - check worker URL"}}
+  return d});
 }
 async function cfgSave(i){
  const el=$("cfg-r-"+i);el.style.color="";el.textContent="saving…";
