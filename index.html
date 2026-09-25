@@ -72,14 +72,14 @@ ul.facts b{color:var(--acc2)}
 <h2>🌐 Live Sites <span style="font-size:.7rem;color:var(--dim)">● green = reachable just now (favicon ping)</span></h2>
 <div class="grid sites" id="sites"></div>
 
-<h2>🚧 Not Yet Live (starter repos)</h2>
+<h2>🚧 Pipeline — placeholder live, real build pending</h2>
 <div class="grid pend" id="pend"></div>
 
 <h2>🚀 Deploy / Actions</h2>
 <div class="grid quick">
   <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/deploy.yml" target="_blank">▶ deploy.yml<small>digipincode Workers</small></a>
   <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/pages-mirror.yml" target="_blank">▶ pages-mirror.yml<small>digipincode Pages</small></a>
-  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect + branding</small></a>
+  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect + spoc deploy</small></a>
   <a class="btn" href="https://github.com/skmstudioservices-cyber/bloodbanksnearme/actions" target="_blank">🩸 bloodbanksnearme<small>prototype ready</small></a>
 </div>
 
@@ -129,6 +129,12 @@ const sites = [
  {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · content sprint 29 Oct"},
  {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",tag:"static tools"},
  {n:"skmstudio.com",u:"https://skmstudio.com",tag:"brand site"},
+ {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",tag:"placeholder · robots Disallow (safety)"},
+ {n:"toiletsnearme",u:"https://toiletsnearme.pages.dev",repo:"toiletsnearme",tag:"placeholder · plan ready"},
+ {n:"cngpumpsnearme",u:"https://cngpumpsnearme.pages.dev",repo:"cngpumpsnearme",tag:"placeholder"},
+ {n:"evchargersnearme",u:"https://evchargersnearme.pages.dev",repo:"EVchargersnearme",tag:"placeholder"},
+ {n:"restareanearme",u:"https://restareanearme.pages.dev",repo:"restareanearme",tag:"placeholder"},
+ {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",tag:"placeholder"},
 ];
 const el = document.getElementById("sites");
 sites.forEach(s=>{
@@ -147,12 +153,12 @@ sites.forEach(s=>{
   img.src = s.u.replace(/\/$/,"") + "/favicon.ico?" + Date.now();
 });
 const pend = [
- {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — verify numbers before launch",repo:"bloodbanksnearme"},
+ {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — call-verify numbers before launch",repo:"bloodbanksnearme"},
  {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
- {n:"cngpumpsnearme",s:"starter files only",repo:"cngpumpsnearme"},
- {n:"EVchargersnearme",s:"starter files only",repo:"EVchargersnearme"},
- {n:"restareanearme",s:"starter files only",repo:"restareanearme"},
- {n:"Aadhaar-Seva-Kendra",s:"starter files only",repo:"Aadhaar-Seva-Kendra-near-me"},
+ {n:"cngpumpsnearme",s:"placeholder live — content build pending",repo:"cngpumpsnearme"},
+ {n:"EVchargersnearme",s:"placeholder live — content build pending",repo:"EVchargersnearme"},
+ {n:"restareanearme",s:"placeholder live — content build pending",repo:"restareanearme"},
+ {n:"Aadhaar-Seva-Kendra",s:"placeholder live — content build pending",repo:"Aadhaar-Seva-Kendra-near-me"},
 ];
 const pl = document.getElementById("pend");
 pend.forEach(p=>{
