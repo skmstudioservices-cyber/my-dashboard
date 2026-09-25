@@ -140,6 +140,7 @@ ul.facts b{color:var(--acc2)}
       <a data-s="notion"><span class="ic">🧠</span>Notion</a>
       <a data-s="domains"><span class="ic">🔍</span>Domains</a>
       <a data-s="notes"><span class="ic">📝</span>Notes</a>
+      <a data-s="config"><span class="ic">🛠</span>Site Config</a>
     </div>
     <div class="sbfoot"><span class="pill">PRIVATE</span><br>robots noindex · your eyes only<br>repo: my-dashboard</div>
   </nav>
@@ -230,7 +231,34 @@ ul.facts b{color:var(--acc2)}
       </div>
     </section>
 
-    <!-- ===== NOTES ===== -->
+    
+<!-- ===== SITE CONFIG ===== -->
+<section class="sec" id="s-config">
+<div class="card" style="margin-bottom:12px">
+<div class="chead" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:.95rem">🛠 Site Config<sm>GSC codes + Monetag files → straight to live sites</sm><span class="sp"></span><button class="rbtn" onclick="cfgCheck()">test worker</button></div>
+<div style="font-size:.78rem;color:var(--dim);line-height:1.6">One-time setup: Cloudflare dashboard → Workers → <b>spoc-writer</b> → Settings → Variables & Secrets → add <b>GH_PAT</b> (existing GitHub token) + <b>PASSCODE</b> (any secret word). Then enter your passcode below — it stays on this device only.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+<input id="cfg-wu" placeholder="worker url" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;flex:1;min-width:220px">
+<input id="cfg-pc" type="password" placeholder="passcode" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:150px">
+</div>
+</div>
+<div class="card" style="margin-bottom:12px">
+<div class="chead" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:.95rem">📊 GSC verification codes<sm>Search Console → Add property (URL prefix) → HTML tag → copy the content="" value</sm></div>
+<div id="cfg-gsc"></div>
+</div>
+<div class="card" style="margin-bottom:12px">
+<div class="chead" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><b style="font-size:.95rem">💰 Monetag / root file<sm>add any root file (.txt .js .html .json .xml) to a site</sm></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<select id="cfg-fs" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit"></select>
+<input id="cfg-fn" placeholder="filename e.g. swalibache.txt" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:210px">
+<button class="rbtn" onclick="cfgFile()">add file</button>
+<span id="cfg-fr" style="font-size:.72rem"></span>
+</div>
+<textarea id="cfg-fc" placeholder="file content — paste Monetag snippet or verification file body..." style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:100%;min-height:90px;margin-top:10px;resize:vertical"></textarea>
+</div>
+</section>
+
+<!-- ===== NOTES ===== -->
     <section class="sec" id="s-notes">
       <div class="shead"><h2>📝 Quick Notes</h2><div class="ln"></div><button class="rbtn" onclick="saveNotes()">💾 save</button></div>
       <textarea class="notes" id="notes" placeholder="Type anything — stays on this device (localStorage)..."></textarea>
@@ -254,24 +282,24 @@ const sites=[
  {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · sprint 29 Oct"},
  {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",tag:"static tools"},
  {n:"skmstudio.com",u:"https://skmstudio.com",tag:"brand site"},
- {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",tag:"placeholder · robots Disallow (safety)"},
- {n:"toiletsnearme",u:"https://toiletsnearme.pages.dev",repo:"toiletsnearme",tag:"placeholder · plan ready"},
- {n:"cngpumpsnearme",u:"https://cngpumpsnearme.pages.dev",repo:"cngpumpsnearme",tag:"placeholder"},
- {n:"evchargersnearme",u:"https://evchargersnearme.pages.dev",repo:"EVchargersnearme",tag:"placeholder"},
- {n:"restareanearme",u:"https://restareanearme.pages.dev",repo:"restareanearme",tag:"placeholder"},
- {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",tag:"placeholder"},
+ {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",tag:"info site · noindex (numbers pending)"},
+ {n:"toiletsnearme",u:"https://toiletsnearme.pages.dev",repo:"toiletsnearme",tag:"info site · live"},
+ {n:"cngpumpsnearme",u:"https://cngpumpsnearme.pages.dev",repo:"cngpumpsnearme",tag:"info site · live"},
+ {n:"evchargersnearme",u:"https://evchargersnearme.pages.dev",repo:"EVchargersnearme",tag:"info site · live"},
+ {n:"restareanearme",u:"https://restareanearme.pages.dev",repo:"restareanearme",tag:"info site · live"},
+ {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",tag:"info site · live"},
  {n:"Safe-Alleys 🛡️",u:"https://safealleys.pages.dev",repo:"Safe-Alleys",tag:"NEW · safety PWA planned (Notion plan)"},
 ];
 const pend=[
  {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — call-verify numbers before launch",repo:"bloodbanksnearme"},
  {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
- {n:"cngpumpsnearme",s:"placeholder live — content build pending",repo:"cngpumpsnearme"},
- {n:"EVchargersnearme",s:"placeholder live — content build pending",repo:"EVchargersnearme"},
- {n:"restareanearme",s:"placeholder live — content build pending",repo:"restareanearme"},
- {n:"Aadhaar-Seva-Kendra",s:"placeholder live — content build pending",repo:"Aadhaar-Seva-Kendra-near-me"},
+ {n:"cngpumpsnearme",s:"✅ content live — GSC + monetag next",repo:"cngpumpsnearme"},
+ {n:"EVchargersnearme",s:"✅ content live — GSC + monetag next",repo:"EVchargersnearme"},
+ {n:"restareanearme",s:"✅ content live — GSC + monetag next",repo:"restareanearme"},
+ {n:"Aadhaar-Seva-Kendra",s:"✅ content live — GSC + monetag next",repo:"Aadhaar-Seva-Kendra-near-me"},
 ];
 const domains=["raktsanchaar.com","raktsanchaar.in","madadnumber.com","madadsanket.com"];
-const SUBS={overview:["Overview","Everything, one page · auto-refreshing"],sites:["Live Sites","Reachability + GitHub activity · auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Availability check via RDAP"],notes:["Quick Notes","Saved locally in this browser"]};
+const SUBS={overview:["Overview","Everything, one page · auto-refreshing"],sites:["Live Sites","Reachability + GitHub activity · auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Availability check via RDAP"],notes:["Quick Notes","Saved locally in this browser"],config:["Site Config","GSC codes + Monetag files → live sites"]};
 
 /* ================= helpers ================= */
 const $=id=>document.getElementById(id);
@@ -402,6 +430,33 @@ document.querySelectorAll(".shead").forEach(h=>{
  const b=document.createElement("button");b.className="rbtn";b.textContent="💬"+(cmCount("sec:"+sec)||"");
  b.onclick=()=>cmToggle("sec:"+sec,b);h.appendChild(b);
 });
+
+/* ===== site config (GSC + monetag via spoc-writer worker) ===== */
+const CFG_SITES=[["toiletsnearme","Toilets Near Me"],["cngpumpsnearme","CNG Pumps"],["EVchargersnearme","EV Chargers"],["restareanearme","Rest Area"],["Aadhaar-Seva-Kendra-near-me","Aadhaar Seva Kendra"],["bloodbanksnearme","Blood Banks"]];
+function cfgInit(){
+ $("cfg-wu").value=localStorage.getItem("spoc_worker")||"https://spoc-writer.india-in.workers.dev";
+ $("cfg-pc").value=localStorage.getItem("spoc_passcode")||"";
+ $("cfg-gsc").innerHTML=CFG_SITES.map((s,i)=>`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed var(--line,var(--border))"><span style="min-width:150px;font-size:.82rem;font-weight:600">${s[1]}</span><input id="cfg-g-${i}" placeholder="paste content value" style="flex:1;min-width:170px"><button class="rbtn" onclick="cfgSave(${i})">save</button><span id="cfg-r-${i}" style="font-size:.72rem"></span></div>`).join("");
+ $("cfg-fs").innerHTML=CFG_SITES.map(s=>`<option value="${s[0]}">${s[1]}</option>`).join("");
+}
+function cfgSend(o){
+ const wu=($("cfg-wu").value||"").trim().replace(/\/+$/,"");
+ localStorage.setItem("spoc_worker",wu);localStorage.setItem("spoc_passcode",$("cfg-pc").value);
+ return fetch(wu,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({passcode:$("cfg-pc").value},o))}).then(r=>r.json());
+}
+async function cfgSave(i){
+ const el=$("cfg-r-"+i);el.style.color="";el.textContent="saving…";
+ if(!$("cfg-g-"+i).value.trim()){el.textContent="paste the code first";return}
+ try{const d=await cfgSend({op:"gsc",repo:CFG_SITES[i][0],code:$("cfg-g-"+i).value.trim()});
+  if(d.ok){el.style.color="var(--ok)";el.textContent="✓ committed — live in ~1 min";toast("GSC code saved to "+CFG_SITES[i][1]+" ✓")}
+  else{el.style.color="var(--bad)";el.textContent="✕ "+(d.error||"failed")}}catch(e){el.style.color="var(--bad)";el.textContent="✕ worker unreachable"}}
+async function cfgFile(){
+ const el=$("cfg-fr");el.style.color="";el.textContent="saving…";
+ try{const d=await cfgSend({op:"file",repo:$("cfg-fs").value,name:$("cfg-fn").value.trim(),content:$("cfg-fc").value});
+  if(d.ok){el.style.color="var(--ok)";el.textContent="✓ committed — live in ~1 min";toast("File added to site ✓")}
+  else{el.style.color="var(--bad)";el.textContent="✕ "+(d.error||"failed")}}catch(e){el.style.color="var(--bad)";el.textContent="✕ worker unreachable"}}
+async function cfgCheck(){try{const d=await cfgSend({op:"ping"});toast(d.ok?"Worker OK ✓":"Worker says: "+(d.error||""))}catch(e){toast("Worker unreachable — not deployed yet?")}}
+cfgInit();
 </script>
 </body>
 </html>

@@ -9,6 +9,33 @@
 (function(){var t=localStorage.getItem("spoc_theme")||"system";
 var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);
 document.documentElement.dataset.theme=d?"dark":"light";})();
+
+/* ===== site config (GSC + monetag via spoc-writer worker) ===== */
+const CFG_SITES=[["toiletsnearme","Toilets Near Me"],["cngpumpsnearme","CNG Pumps"],["EVchargersnearme","EV Chargers"],["restareanearme","Rest Area"],["Aadhaar-Seva-Kendra-near-me","Aadhaar Seva Kendra"],["bloodbanksnearme","Blood Banks"]];
+function cfgInit(){
+ $("cfg-wu").value=localStorage.getItem("spoc_worker")||"https://spoc-writer.india-in.workers.dev";
+ $("cfg-pc").value=localStorage.getItem("spoc_passcode")||"";
+ $("cfg-gsc").innerHTML=CFG_SITES.map((s,i)=>`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed var(--line,var(--border))"><span style="min-width:150px;font-size:.82rem;font-weight:600">${s[1]}</span><input id="cfg-g-${i}" placeholder="paste content value" style="flex:1;min-width:170px"><button class="rbtn" onclick="cfgSave(${i})">save</button><span id="cfg-r-${i}" style="font-size:.72rem"></span></div>`).join("");
+ $("cfg-fs").innerHTML=CFG_SITES.map(s=>`<option value="${s[0]}">${s[1]}</option>`).join("");
+}
+function cfgSend(o){
+ const wu=($("cfg-wu").value||"").trim().replace(/\/+$/,"");
+ localStorage.setItem("spoc_worker",wu);localStorage.setItem("spoc_passcode",$("cfg-pc").value);
+ return fetch(wu,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({passcode:$("cfg-pc").value},o))}).then(r=>r.json());
+}
+async function cfgSave(i){
+ const el=$("cfg-r-"+i);el.style.color="";el.textContent="saving…";
+ if(!$("cfg-g-"+i).value.trim()){el.textContent="paste the code first";return}
+ try{const d=await cfgSend({op:"gsc",repo:CFG_SITES[i][0],code:$("cfg-g-"+i).value.trim()});
+  if(d.ok){el.style.color="var(--ok)";el.textContent="✓ committed — live in ~1 min";toast("GSC code saved to "+CFG_SITES[i][1]+" ✓")}
+  else{el.style.color="var(--bad)";el.textContent="✕ "+(d.error||"failed")}}catch(e){el.style.color="var(--bad)";el.textContent="✕ worker unreachable"}}
+async function cfgFile(){
+ const el=$("cfg-fr");el.style.color="";el.textContent="saving…";
+ try{const d=await cfgSend({op:"file",repo:$("cfg-fs").value,name:$("cfg-fn").value.trim(),content:$("cfg-fc").value});
+  if(d.ok){el.style.color="var(--ok)";el.textContent="✓ committed — live in ~1 min";toast("File added to site ✓")}
+  else{el.style.color="var(--bad)";el.textContent="✕ "+(d.error||"failed")}}catch(e){el.style.color="var(--bad)";el.textContent="✕ worker unreachable"}}
+async function cfgCheck(){try{const d=await cfgSend({op:"ping"});toast(d.ok?"Worker OK ✓":"Worker says: "+(d.error||""))}catch(e){toast("Worker unreachable — not deployed yet?")}}
+cfgInit();
 </script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%236366f1'/><text x='50' y='70' font-size='54' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>S</text></svg>">
 <style>
@@ -189,6 +216,7 @@ td .tg{color:var(--faint);font-size:.74rem}
         <a data-s="notion">🧠 Notion</a>
         <a data-s="domains">🔍 Domains</a>
         <a data-s="notes">📝 Notes</a>
+        <a data-s="config">🛠 Site Config</a>
       </div></div>
     <div class="sbfoot"><span class="badge-p">PRIVATE</span><br>noindex · robots blocked<br><a href="index.html" style="font-size:.72rem">⇄ switch to Classic UI</a><br>comments: saved on this device</div>
   </aside>
@@ -320,6 +348,33 @@ td .tg{color:var(--faint);font-size:.74rem}
       </div>
     </section>
 
+    
+<!-- ===== SITE CONFIG ===== -->
+<section class="sec" id="s-config">
+<div class="card" style="margin-bottom:14px">
+<div class="chead"><b>🛠 Site Config<sm>GSC codes + Monetag files → straight to live sites</sm><span class="sp"></span><button class="rbtn" onclick="cfgCheck()">test worker</button></div>
+<div style="font-size:.78rem;color:var(--dim);line-height:1.6">One-time setup: Cloudflare dashboard → Workers → <b>spoc-writer</b> → Settings → Variables & Secrets → add <b>GH_PAT</b> (existing GitHub token) + <b>PASSCODE</b> (any secret word). Then enter your passcode below — it stays on this device only.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+<input id="cfg-wu" placeholder="worker url" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;flex:1;min-width:220px">
+<input id="cfg-pc" type="password" placeholder="passcode" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:150px">
+</div>
+</div>
+<div class="card" style="margin-bottom:14px">
+<div class="chead"><b>📊 GSC verification codes<sm>Search Console → Add property (URL prefix) → HTML tag → copy the content="" value</sm></div>
+<div id="cfg-gsc"></div>
+</div>
+<div class="card" style="margin-bottom:14px">
+<div class="chead"><b>💰 Monetag / root file<sm>add any root file (.txt .js .html .json .xml) to a site</sm></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<select id="cfg-fs" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit"></select>
+<input id="cfg-fn" placeholder="filename e.g. swalibache.txt" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:210px">
+<button class="rbtn" onclick="cfgFile()">add file</button>
+<span id="cfg-fr" style="font-size:.72rem"></span>
+</div>
+<textarea id="cfg-fc" placeholder="file content — paste Monetag snippet or verification file body..." style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--txt);font-size:.8rem;font-family:inherit;width:100%;min-height:90px;margin-top:10px;resize:vertical"></textarea>
+</div>
+</section>
+
     <!-- NOTES -->
     <section class="sec" id="s-notes">
       <div class="card">
@@ -368,7 +423,7 @@ const pend=[
  {n:"Aadhaar-Seva-Kendra",s:"content build pending",repo:"Aadhaar-Seva-Kendra-near-me"},
 ];
 const domains=["raktsanchaar.com","raktsanchaar.in","madadnumber.com","madadsanket.com"];
-const SUBS={overview:["Overview","Welcome back, SKM — here's your network today."],sites:["Live Sites","Status · last push · links — auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Live RDAP availability check"],notes:["Quick Notes","Saved locally in this browser"]};
+const SUBS={overview:["Overview","Welcome back, SKM — here's your network today."],sites:["Live Sites","Status · last push · links — auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Live RDAP availability check"],notes:["Quick Notes","Saved locally in this browser"],config:["Site Config","GSC codes + Monetag files → live sites"]};
 
 /* ============ helpers ============ */
 const $=id=>document.getElementById(id);
