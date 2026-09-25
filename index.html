@@ -1,23 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Dashboard - Coming Soon</title>
-  <meta name="description" content="My Dashboard - coming soon from SKM Studio Network.">
-  <meta name="robots" content="noindex, nofollow">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f172a; color: #e2e8f0; text-align: center; padding: 1rem; }
-    .box h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); margin-bottom: .5rem; }
-    .box p { color: #94a3b8; }
-    .box .dot { color: #38bdf8; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<title>SKM SPOC — Single Point of Control</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111827'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23f59e0b' font-family='Arial' font-weight='bold'>S</text></svg>">
+<style>
+:root{
+  --bg:#0b1120; --panel:#111827; --panel2:#161f33; --line:#243049;
+  --txt:#e5e9f0; --dim:#8b97ab; --acc:#f59e0b; --acc2:#fbbf24;
+  --ok:#22c55e; --bad:#ef4444; --warn:#eab308; --unknown:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;line-height:1.5;padding:20px;max-width:1200px;margin:0 auto}
+h1{font-size:1.5rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:#3f2d04;color:var(--acc2);border:1px solid #7c5a08;letter-spacing:.5px}
+.sub{color:var(--dim);font-size:.85rem;margin-top:4px}
+h2{font-size:1.02rem;color:var(--acc2);margin:28px 0 12px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.grid{display:grid;gap:10px}
+.quick{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.sites{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.pend{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+a{color:#7ab8ff;text-decoration:none}
+a:hover{text-decoration:underline}
+.btn{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--txt);font-weight:600;font-size:.9rem;text-align:center;transition:.15s}
+.btn:hover{border-color:var(--acc);transform:translateY(-1px);text-decoration:none;color:var(--acc2)}
+.btn small{display:block;font-weight:400;color:var(--dim);font-size:.72rem;margin-top:2px}
+.site{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.site .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.site .nm{font-weight:700;font-size:.95rem}
+.site .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:.72rem;padding:3px 9px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
+.chip:hover{color:var(--acc2);border-color:var(--acc);text-decoration:none}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--unknown);display:inline-block;flex:none;margin-top:5px;box-shadow:0 0 6px rgba(0,0,0,.5)}
+.dot.ok{background:var(--ok);box-shadow:0 0 8px rgba(34,197,94,.6)}
+.dot.bad{background:var(--bad)}
+ul.facts{list-style:none}
+ul.facts li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:.87rem}
+ul.facts li:last-child{border:none}
+ul.facts b{color:var(--acc2)}
+.pitem{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.83rem}
+.pitem .nm{font-weight:700;margin-bottom:3px}
+.pitem .st{color:var(--warn);font-size:.72rem}
+.pitem .st2{color:var(--dim);font-size:.72rem}
+.notes{width:100%;min-height:110px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:12px;font-family:inherit;font-size:.88rem;resize:vertical}
+.notes:focus{outline:none;border-color:var(--acc)}
+.foot{margin-top:34px;color:var(--dim);font-size:.75rem;text-align:center;border-top:1px solid var(--line);padding-top:14px}
+.kbd{font-family:monospace;background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:.78rem}
+</style>
 </head>
 <body>
-  <div class="box">
-    <h1>My Dashboard</h1>
-    <p>Coming soon<span class="dot">...</span></p>
-  </div>
+
+<h1>🎯 SKM SPOC <span class="badge">PRIVATE</span></h1>
+<div class="sub">Single Point of Control — SKM Studio Network · one page for CF, GitHub, GSC, Notion & mail · <span id="upd">updated 25 Sep 2026</span></div>
+
+<h2>⚡ Quick Jump</h2>
+<div class="grid quick">
+  <a class="btn" href="https://dash.cloudflare.com" target="_blank">☁️ Cloudflare<small>dashboard home</small></a>
+  <a class="btn" href="https://dash.cloudflare.com/?to=/:account/workers-and-pages" target="_blank">🚀 Workers & Pages<small>all sites + quotas</small></a>
+  <a class="btn" href="https://github.com/skmstudioservices-cyber?tab=repositories" target="_blank">🐙 GitHub<small>all 18 repos</small></a>
+  <a class="btn" href="https://search.google.com/search-console" target="_blank">📊 Search Console<small>indexing + performance</small></a>
+  <a class="btn" href="https://analytics.google.com" target="_blank">📈 Analytics<small>GA (once wired)</small></a>
+  <a class="btn" href="https://mail.google.com" target="_blank">✉️ Gmail<small>skmstudio.services</small></a>
+  <a class="btn" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">🧠 Mission Control<small>Notion HQ</small></a>
+  <a class="btn" href="https://dash.cloudflare.com/?to=/:account/observability" target="_blank">🩺 CF Observability<small>bot + quota logs</small></a>
+</div>
+
+<h2>🌐 Live Sites <span style="font-size:.7rem;color:var(--dim)">● green = reachable just now (favicon ping)</span></h2>
+<div class="grid sites" id="sites"></div>
+
+<h2>🚧 Not Yet Live (starter repos)</h2>
+<div class="grid pend" id="pend"></div>
+
+<h2>🚀 Deploy / Actions</h2>
+<div class="grid quick">
+  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/deploy.yml" target="_blank">▶ deploy.yml<small>digipincode Workers</small></a>
+  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions/workflows/pages-mirror.yml" target="_blank">▶ pages-mirror.yml<small>digipincode Pages</small></a>
+  <a class="btn" href="https://github.com/skmstudioservices-cyber/digipincode-india/actions" target="_blank">🧰 All Workflows<small>fix + inspect + branding</small></a>
+  <a class="btn" href="https://github.com/skmstudioservices-cyber/bloodbanksnearme/actions" target="_blank">🩸 bloodbanksnearme<small>prototype ready</small></a>
+</div>
+
+<h2>📋 Vitals & Quotas</h2>
+<div class="card">
+<ul class="facts">
+  <li><b>D1 quota:</b> 100k reads/day · resets <b>05:30 IST</b> · SSR sites were dying <b>~17:30 IST</b> — should improve after 25 Sep robots fixes</li>
+  <li><b>AI bots blocked:</b> ~50 bots (54 UA groups) across 4 SSR sites — quota now reserved for Googlebot/Bingbot</li>
+  <li><b>Sitemap lean:</b> 302,685 → <b>3,177 URLs</b> (99% cut) — resubmitted to GSC 25 Sep</li>
+  <li><b>GSC manual indexing:</b> ~10 requests/day — don't waste on bulk; sitemap + crawl is the path</li>
+  <li><b>Watch window:</b> Discovered → Indexed flips expected <b>28 Sep – 2 Oct</b> · check impressions on both digipincode properties</li>
+  <li><b>Canonical watch:</b> Google prefers <span class="kbd">digipincode.pages.dev</span>; sitemap lives on workers.dev property — keep an eye</li>
+  <li><b>Never mention "6 months"</b> on skmstudio.com (until ~23 Mar 2027) · no new tokens · no CF upgrade</li>
+</ul>
+</div>
+
+<h2>🧠 Notion Control Room</h2>
+<div class="grid quick">
+  <a class="btn" href="https://www.notion.so/32fd732a925f814b88acdd0404c989c3" target="_blank">Mission Control<small>master plan</small></a>
+  <a class="btn" href="https://www.notion.so/3e4d732a925f815ead2de08a55b53f08" target="_blank">Conversation Log<small>session history</small></a>
+  <a class="btn" href="https://www.notion.so/3e4d732a925f8142a5e1fccfadc079e5" target="_blank">RTO Build Plan<small>niche roadmap</small></a>
+  <a class="btn" href="https://www.notion.so/3e1d732a925f8189b544ce3c8024ebb6" target="_blank">Mistake Log<small>lessons learned</small></a>
+</div>
+
+<h2>🔍 Domain Watchlist (available as of 24 Sep)</h2>
+<div class="card" style="font-size:.9rem">
+  <span class="chip">raktsanchaar.com</span> <span class="chip">raktsanchaar.in</span> <span class="chip">madadnumber.com</span> <span class="chip">madadsanket.com</span>
+  <div class="sub" style="margin-top:8px">Blood bank mission domains — grab before building bloodbanksnearme.</div>
+</div>
+
+<h2>📝 Quick Notes <span style="font-size:.7rem;color:var(--dim)">saved in this browser only</span></h2>
+<textarea class="notes" id="notes" placeholder="Type anything — it stays on this device (localStorage)..."></textarea>
+
+<div class="foot">
+  🔒 Private — robots Disallow-all + noindex · hosted at <span class="kbd">skm-spoc.pages.dev</span> from repo <span class="kbd">my-dashboard</span> · SKM Studio Network
+</div>
+
+<script>
+const G = "https://github.com/skmstudioservices-cyber/";
+const GSC = q => "https://search.google.com/search-console?resource_id=" + encodeURIComponent(q);
+const sites = [
+ {n:"digipincode (Workers)",u:"https://digipincode.india-in.workers.dev",repo:"digipincode-india",gsc:"https://digipincode.india-in.workers.dev/",tag:"SSR · D1 quota"},
+ {n:"digipincode (Pages)",u:"https://digipincode.pages.dev",repo:"digipincode-india",gsc:"https://digipincode.pages.dev/",tag:"mirror · canonical host"},
+ {n:"mapsnearme",u:"https://mapsnearme.pages.dev",repo:"mapsnearme",gsc:"https://mapsnearme.pages.dev/",tag:"static · quota-immune"},
+ {n:"dashboardmapsnearme",u:"https://dashboardmapsnearme.pages.dev",repo:"dashboardmapsnearme",tag:"static"},
+ {n:"examstatus",u:"https://examstatus.india-in.workers.dev",repo:"examstatus",gsc:"https://examstatus.india-in.workers.dev/",tag:"SSR · bridge deploy"},
+ {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · content sprint 29 Oct"},
+ {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",tag:"static tools"},
+ {n:"skmstudio.com",u:"https://skmstudio.com",tag:"brand site"},
+];
+const el = document.getElementById("sites");
+sites.forEach(s=>{
+  const d = document.createElement("div"); d.className="site";
+  let g = s.gsc?`<a class="chip" href="${GSC(s.gsc)}" target="_blank">GSC</a>`:"";
+  let r = s.repo?`<a class="chip" href="${G+s.repo}" target="_blank">repo</a>
+   <a class="chip" href="${G+s.repo}/actions" target="_blank">actions</a>`:"";
+  d.innerHTML = `<div class="top"><div><div class="nm"><a href="${s.u}" target="_blank">${s.n}</a></div>
+   <div class="sub">${s.tag}</div></div><span class="dot" id="dot-${s.n.replace(/[^a-z]/gi,'')}"></span></div>
+   <div class="row">${g}${r}<span class="chip" style="cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText('${s.u}')">copy URL</span></div>`;
+  el.appendChild(d);
+  const dot = d.querySelector(".dot"), img = new Image();
+  let done=false; const t=setTimeout(()=>{if(!done){done=true;dot.classList.add("bad")}},7000);
+  img.onload=()=>{if(!done){done=true;clearTimeout(t);dot.classList.add("ok")}};
+  img.onerror=()=>{if(!done){done=true;clearTimeout(t);dot.classList.add("bad")}};
+  img.src = s.u.replace(/\/$/,"") + "/favicon.ico?" + Date.now();
+});
+const pend = [
+ {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — verify numbers before launch",repo:"bloodbanksnearme"},
+ {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
+ {n:"cngpumpsnearme",s:"starter files only",repo:"cngpumpsnearme"},
+ {n:"EVchargersnearme",s:"starter files only",repo:"EVchargersnearme"},
+ {n:"restareanearme",s:"starter files only",repo:"restareanearme"},
+ {n:"Aadhaar-Seva-Kendra",s:"starter files only",repo:"Aadhaar-Seva-Kendra-near-me"},
+];
+const pl = document.getElementById("pend");
+pend.forEach(p=>{
+  const d=document.createElement("div"); d.className="pitem";
+  d.innerHTML=`<div class="nm">${p.n}</div><div class="st">${p.s}</div>
+  <div style="margin-top:6px"><a class="chip" href="${G+p.repo}" target="_blank">repo</a></div>`;
+  pl.appendChild(d);
+});
+const nt = document.getElementById("notes");
+nt.value = localStorage.getItem("spoc_notes")||"";
+nt.addEventListener("input",()=>localStorage.setItem("spoc_notes",nt.value));
+document.getElementById("upd").textContent = "updated " + new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});
+</script>
 </body>
 </html>
