@@ -134,6 +134,7 @@ ul.facts b{color:var(--acc2)}
     <div class="nav" id="nav">
       <a data-s="overview" class="on"><span class="ic">📊</span>Overview</a>
       <a data-s="sites"><span class="ic">🌐</span>Live Sites</a>
+      <a data-s="analytics"><span class="ic">📈</span>Analytics</a>
       <a data-s="pipeline"><span class="ic">🚧</span>Pipeline</a>
       <a data-s="deploys"><span class="ic">🚀</span>Deploys</a>
       <a data-s="vitals"><span class="ic">📋</span>Vitals</a>
@@ -179,6 +180,16 @@ ul.facts b{color:var(--acc2)}
     </section>
 
     <!-- ===== PIPELINE ===== -->
+    <!-- ===== ANALYTICS ===== -->
+    <section class="sec" id="s-analytics">
+      <div class="shead"><h2>📈 Google Analytics — every site, live numbers</h2><div class="ln"></div>
+        <button class="rbtn" onclick="loadGa()">⟳ refresh</button></div>
+      <div id="ga-note" style="font-size:.75rem;opacity:.75;margin-bottom:10px"></div>
+      <div class="grid sites" id="gagrid"></div>
+      <div class="shead" style="margin-top:18px"><h2>📖 What each metric means — and why you track it</h2><div class="ln"></div></div>
+      <div id="ga-glossary"></div>
+    </section>
+
     <section class="sec" id="s-pipeline">
       <div class="shead"><h2>🚧 Pipeline</h2><div class="ln"></div><button class="rbtn" onclick="refreshSection('pipeline',this)">⟳ refresh</button></div>
       <div class="grid pend" id="pendgrid"></div>
@@ -279,7 +290,7 @@ const sites=[
  {n:"mapsnearme",u:"https://mapsnearme.pages.dev",repo:"mapsnearme",gsc:"https://mapsnearme.pages.dev/",tag:"static · quota-immune"},
  {n:"dashboardmapsnearme",u:"https://dashboardmapsnearme.pages.dev",repo:"dashboardmapsnearme",tag:"static · Supabase admin"},
  {n:"examstatus",u:"https://examstatus.india-in.workers.dev",repo:"examstatus",gsc:"https://examstatus.india-in.workers.dev/",tag:"SSR · bridge deploy"},
- {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"SSR · sprint 29 Oct"},
+ {n:"karvachauth",u:"https://karvachauth.india-in.workers.dev",repo:"karvachauth",gsc:"https://karvachauth.india-in.workers.dev/",tag:"static · pages+workers · 29 Oct fix pending"},
  {n:"skmtools",u:"https://skmtools.pages.dev",repo:"skmtools",gsc:"https://skmtools.pages.dev/",tag:"static tools"},
  {n:"skmstudio.com",u:"https://skmstudio.com",tag:"brand site"},
  {n:"bloodbanksnearme",u:"https://bloodbanksnearme.pages.dev",repo:"bloodbanksnearme",tag:"info site · noindex (numbers pending)"},
@@ -288,18 +299,24 @@ const sites=[
  {n:"evchargersnearme",u:"https://evchargersnearme.pages.dev",repo:"EVchargersnearme",tag:"info site · live"},
  {n:"restareanearme",u:"https://restareanearme.pages.dev",repo:"restareanearme",tag:"info site · live"},
  {n:"Aadhaar Seva Kendra",u:"https://aadhaar-seva-kendra-near-me.pages.dev",repo:"Aadhaar-Seva-Kendra-near-me",tag:"info site · live"},
- {n:"Safe-Alleys 🛡️",u:"https://safealleys.pages.dev",repo:"Safe-Alleys",tag:"NEW · safety PWA planned (Notion plan)"},
+ {n:"Safe-Alleys 🛡️",u:"https://safealleys.pages.dev",repo:"Safe-Alleys",tag:"safety PWA v2 · live"},
+ {n:"airqualitynearme",u:"https://airqualitynearme.pages.dev",repo:"airqualitynearme",gsc:"https://airqualitynearme.pages.dev/",tag:"live data · AQI · 16 pages"},
+ {n:"earthquakenearme",u:"https://earthquakenearme.pages.dev",repo:"earthquakenearme",gsc:"https://earthquakenearme.pages.dev/",tag:"live data · USGS feed"},
+ {n:"isrotracker",u:"https://isrotracker.pages.dev",repo:"isrotracker",gsc:"https://isrotracker.pages.dev/",tag:"live data · launches"},
+ {n:"bharatlive",u:"https://bharatlive.pages.dev",repo:"bharatlive",gsc:"https://bharatlive.pages.dev/",tag:"live ops wall"},
+ {n:"issspotter",u:"https://issspotter.pages.dev",repo:"issspotter",gsc:"https://issspotter.pages.dev/",tag:"live data · ISS"},
+ {n:"asiangamesmedaltally2026",u:"https://asiangamesmedaltally2026.pages.dev",repo:"asiangamesmedaltally2026",gsc:"https://asiangamesmedaltally2026.pages.dev/",tag:"trend burst · QDF until ~7 Oct"},
+ {n:"floodsnearme",u:"https://floodsnearme.pages.dev",repo:"floodsnearme",gsc:"https://floodsnearme.pages.dev/",tag:"trend burst · CG floods live"},
 ];
 const pend=[
- {n:"bloodbanksnearme",s:"🩸 prototype ready (Gorakhpur) — call-verify numbers before launch",repo:"bloodbanksnearme"},
- {n:"toiletsnearme",s:"plan ready in Notion",repo:"toiletsnearme"},
- {n:"cngpumpsnearme",s:"✅ content live — GSC + monetag next",repo:"cngpumpsnearme"},
- {n:"EVchargersnearme",s:"✅ content live — GSC + monetag next",repo:"EVchargersnearme"},
- {n:"restareanearme",s:"✅ content live — GSC + monetag next",repo:"restareanearme"},
- {n:"Aadhaar-Seva-Kendra",s:"✅ content live — GSC + monetag next",repo:"Aadhaar-Seva-Kendra-near-me"},
+ {n:"karvachauth",s:"date fix 29 Oct (not 10 Oct) — target 29 Sep",repo:"karvachauth"},
+ {n:"floodsnearme",s:"design A vs B decision + /cyclone-arnab/ page proposed",repo:"floodsnearme"},
+ {n:"examstatus",s:"UGC NET page live — watch result day traffic",repo:"examstatus"},
+ {n:"GA automation",s:"spoc-writer secrets (GH_PAT + PASSCODE) + GA service key pending",repo:"digipincode-india"},
+ {n:"GSC",s:"2 Verify clicks pending (trend sites) → then sitemaps",repo:""},
 ];
 const domains=["raktsanchaar.com","raktsanchaar.in","madadnumber.com","madadsanket.com"];
-const SUBS={overview:["Overview","Everything, one page · auto-refreshing"],sites:["Live Sites","Reachability + GitHub activity · auto-fetched"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Availability check via RDAP"],notes:["Quick Notes","Saved locally in this browser"],config:["Site Config","GSC codes + Monetag files → live sites"]};
+const SUBS={overview:["Overview","Everything, one page · auto-refreshing"],sites:["Live Sites","Reachability + GitHub activity · auto-fetched"],analytics:["Analytics","Per-site Google Analytics · numbers + meanings"],pipeline:["Pipeline","Placeholder sites — real builds pending"],deploys:["Deploy / Actions","One-click workflow runs"],vitals:["Vitals & Quotas","Ops facts & watch windows"],notion:["Notion Control Room","Direct links to the brain"],domains:["Domain Watchlist","Availability check via RDAP"],notes:["Quick Notes","Saved locally in this browser"],config:["Site Config","GSC codes + Monetag files → live sites"]};
 
 /* ================= helpers ================= */
 const $=id=>document.getElementById(id);
@@ -317,6 +334,7 @@ nav.forEach(a=>a.onclick=()=>{nav.forEach(x=>x.classList.remove("on"));a.classLi
  $("ptitle").textContent=SUBS[a.dataset.s][0];$("psub").textContent=SUBS[a.dataset.s][1];
  toggleNav(false);window.scrollTo({top:0});
  if(a.dataset.s==="sites")refreshSection("sites",null,true);
+ if(a.dataset.s==="analytics")loadGa();
  if(a.dataset.s==="overview")buildStats();
 });
 
@@ -459,6 +477,42 @@ async function cfgFile(){
   if(d.ok){el.style.color="var(--ok)";el.textContent="✓ committed — live in ~1 min";toast("File added to site ✓")}
   else{el.style.color="var(--bad)";el.textContent="✕ "+(d.error||"failed")}}catch(e){el.style.color="var(--bad)";el.textContent="✕ worker unreachable"}}
 async function cfgCheck(){try{const d=await cfgSend({op:"ping"});toast(d.ok?"Worker OK ✓":"Worker says: "+(d.error||""))}catch(e){toast("Worker unreachable — not deployed yet?")}}
+
+/* ================= analytics (GA) ================= */
+const GA_GLOSSARY=[
+["Active users (realtime)","People on the site right now (last 30 min).","Instant proof a burst, share or new ranking is sending traffic — check this the moment you publish something."],
+["Sessions","One visit — everything a person does within 30 minutes.","Your daily traffic number. Growing sessions = growing visibility. Compare day-over-day."],
+["Users","Unique visitors (approximate).","How many different people you reached. Users lower than Sessions means people return."],
+["Page views","Total pages viewed, including repeats.","Content consumption. High views per session = deep browsing (good for ad revenue later)."],
+["Engaged sessions","Sessions with 10+ seconds, a click, or a conversion.","Quality filter — removes accidental bounces and instant exits."],
+["Engagement rate","% of sessions that were engaged.","The best single 'is my content useful' number. Above ~50% is healthy; low = wrong audience or thin page."],
+["Avg engagement time","Average active time per session.","Content depth signal. Utility pages 30s+ is fine; guides should be 2min+."],
+["Events","Specific interactions you choose to track (clicks, taps).","Later: track funnel clicks — e.g., flood-page visitors opening the helpline or Safe-Alleys."],
+["Conversions","The actions YOU define as valuable.","Turns traffic into results — define e.g. 'clicked Safe-Alleys link' as a conversion and watch the funnel work."],
+["Bot filtering","GA auto-excludes known bots; crawlers never run the tag.","Your numbers here are ~real humans. GSC shows the search-bot view; GA shows the human view. Use both."]];
+async function loadGa(){
+ const grid=$("gagrid");if(!grid)return;
+ $("ga-note").textContent="loading…";
+ try{
+  const r=await fetch("/ga-data.json?t="+Date.now());
+  const d=await r.json();
+  $("ga-note").innerHTML="Last sync: <b>"+d.last_synced+"</b> · "+(d.note||"")+" · <button class='rbtn' style='padding:2px 10px;font-size:.7rem' onclick='gaSyncWorker()'>⚡ sync via worker</button>";
+  grid.innerHTML=(d.properties||[]).map(p=>`<div class="stat"><div class="v">${p.live_users||0}</div><div class="l">${p.n}</div>
+   <div style="font-size:.68rem;opacity:.65;margin-top:6px">🟢 live now (realtime)</div>
+   <div style="font-size:.72rem;margin-top:4px">Today: ${p.today_sessions||0} sessions · ${p.today_users||0} users · ${p.today_views||0} views</div>
+   <div style="font-size:.72rem">7d: ${p.week_sessions||0} sessions</div>
+   <div style="font-size:.72rem">Engagement: ${p.engagement_rate||"—"} · avg ${p.avg_time||"—"}</div>
+   <div style="font-size:.66rem;opacity:.6;margin-top:6px">${p.gid} · live since ${p.tag_live_since||"—"}</div></div>`).join("");
+  if(!$("ga-glossary").innerHTML){
+   $("ga-glossary").innerHTML=GA_GLOSSARY.map(g=>`<details style="border:1px solid var(--line,#263042);border-radius:10px;padding:10px 12px;margin:6px 0"><summary style="cursor:pointer;font-weight:600;font-size:.85rem">${g[0]}</summary><div style="font-size:.78rem;margin-top:6px;opacity:.85"><b>What:</b> ${g[1]}<br><b>Why you track it:</b> ${g[2]}</div></details>`).join("");
+  }
+ }catch(e){$("ga-note").textContent="ga-data.json not reachable";grid.innerHTML=""}
+}
+async function gaSyncWorker(){
+ try{const d=await cfgSend({op:"ga"});
+  toast(d.ok?"GA sync requested ✓":(d.error||"worker: op not configured yet"))}
+ catch(e){toast("Worker unreachable — add spoc-writer secrets to activate")}
+}
 cfgInit();
 </script>
 </body>
